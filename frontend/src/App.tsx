@@ -19,7 +19,12 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <RouterProvider
+            router={router}
+            future={{
+              v7_startTransition: true,
+            }}
+          />
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </AuthProvider>

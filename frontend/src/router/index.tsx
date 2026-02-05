@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import ProtectedRoute from "./ProtectedRoute";
+import RoleProtectedRoute from "./RoleProtectedRoute";
 import LoginPage from "@/pages/LoginPage";
 import DashboardPage from "@/pages/DashboardPage";
 import ClientesListPage from "@/pages/clientes/ClientesListPage";
@@ -19,6 +20,10 @@ import PagoValidarPage from "@/pages/pagos/PagoValidarPage";
 import InstalacionesListPage from "@/pages/instalaciones/InstalacionesListPage";
 import InstalacionSolicitudCreatePage from "@/pages/instalaciones/InstalacionSolicitudCreatePage";
 import InstalacionDetailPage from "@/pages/instalaciones/InstalacionDetailPage";
+import UsuariosListPage from "@/pages/usuarios/UsuariosListPage";
+import UsuarioCreatePage from "@/pages/usuarios/UsuarioCreatePage";
+import UsuarioEditPage from "@/pages/usuarios/UsuarioEditPage";
+import RolesManagementPage from "@/pages/roles/RolesManagementPage";
 
 export const router = createBrowserRouter([
   {
@@ -37,18 +42,52 @@ export const router = createBrowserRouter([
           { path: "clientes/nuevo", element: <ClienteCreatePage /> },
           { path: "clientes/:id", element: <ClienteDetailPage /> },
           { path: "clientes/:id/editar", element: <ClienteEditPage /> },
-          { path: "planes", element: <PlanesListPage /> },
-          { path: "planes/nuevo", element: <PlanCreatePage /> },
-          { path: "planes/:id/editar", element: <PlanEditPage /> },
+          {
+            path: "planes",
+            element: <RoleProtectedRoute module="planes"><PlanesListPage /></RoleProtectedRoute>
+          },
+          {
+            path: "planes/nuevo",
+            element: <RoleProtectedRoute module="planes"><PlanCreatePage /></RoleProtectedRoute>
+          },
+          {
+            path: "planes/:id/editar",
+            element: <RoleProtectedRoute module="planes"><PlanEditPage /></RoleProtectedRoute>
+          },
           { path: "contratos", element: <ContratosListPage /> },
           { path: "contratos/nuevo", element: <ContratoCreatePage /> },
           { path: "contratos/:id/editar", element: <ContratoEditPage /> },
           { path: "pagos", element: <PagosListPage /> },
           { path: "pagos/nuevo", element: <PagoCreatePage /> },
           { path: "pagos/:id/validar", element: <PagoValidarPage /> },
-          { path: "instalaciones", element: <InstalacionesListPage /> },
-          { path: "instalaciones/nueva-solicitud", element: <InstalacionSolicitudCreatePage /> },
-          { path: "instalaciones/:id", element: <InstalacionDetailPage /> },
+          {
+            path: "instalaciones",
+            element: <RoleProtectedRoute module="instalaciones"><InstalacionesListPage /></RoleProtectedRoute>
+          },
+          {
+            path: "instalaciones/nueva-solicitud",
+            element: <RoleProtectedRoute module="instalaciones"><InstalacionSolicitudCreatePage /></RoleProtectedRoute>
+          },
+          {
+            path: "instalaciones/:id",
+            element: <RoleProtectedRoute module="instalaciones"><InstalacionDetailPage /></RoleProtectedRoute>
+          },
+          {
+            path: "usuarios",
+            element: <RoleProtectedRoute module="usuarios"><UsuariosListPage /></RoleProtectedRoute>
+          },
+          {
+            path: "usuarios/nuevo",
+            element: <RoleProtectedRoute module="usuarios"><UsuarioCreatePage /></RoleProtectedRoute>
+          },
+          {
+            path: "usuarios/:id",
+            element: <RoleProtectedRoute module="usuarios"><UsuarioEditPage /></RoleProtectedRoute>
+          },
+          {
+            path: "roles",
+            element: <RoleProtectedRoute module="roles"><RolesManagementPage /></RoleProtectedRoute>
+          },
         ],
       },
     ],

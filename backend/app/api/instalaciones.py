@@ -6,9 +6,9 @@ from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.dependencies import get_current_active_user
+from app.dependencies import get_current_active_user, require_role
 from app.models.instalacion import EstadoInstalacion
-from app.models.usuario import Usuario
+from app.models.usuario import RolUsuario, Usuario
 from app.schemas.common import PaginatedResponse
 from app.schemas.instalacion import (
     InstalacionActivarRequest,
@@ -49,9 +49,9 @@ async def get_instalacion(
 async def create_solicitud(
     data: InstalacionSolicitudCreate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR, RolUsuario.TECNICO)),
 ):
-    """Create installation request with temporary client data"""
+    """Create installation request (Admin, Operador, and Tecnico)"""
     return await instalaciones_service.create_solicitud(db, data)
 
 
@@ -60,9 +60,9 @@ async def update_instalacion(
     instalacion_id: uuid.UUID,
     data: InstalacionUpdate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR, RolUsuario.TECNICO)),
 ):
-    """Update installation"""
+    """Update installation (Admin, Operador, and Tecnico)"""
     return await instalaciones_service.update_instalacion(db, instalacion_id, data)
 
 
@@ -71,9 +71,9 @@ async def activar_instalacion(
     instalacion_id: uuid.UUID,
     data: InstalacionActivarRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: Usuario = Depends(get_current_active_user),
+    current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR, RolUsuario.TECNICO)),
 ):
-    """Activate installation by creating client and contract"""
+    """Activate installation (Admin, Operador, and Tecnico)"""
     return await instalaciones_service.activar_instalacion(
         db, instalacion_id, data, current_user.id
     )

@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import NotFoundError
 from app.database import get_db
-from app.dependencies import get_current_active_user
+from app.dependencies import get_current_active_user, require_role
 from app.models.contrato import EstadoContrato
-from app.models.usuario import Usuario
+from app.models.usuario import RolUsuario, Usuario
 from app.schemas.common import PaginatedResponse
 from app.schemas.contrato import ContratoCreate, ContratoDetailResponse, ContratoUpdate
 from app.services import contratos as contratos_service
@@ -42,8 +42,9 @@ async def get_contrato(
 async def create_contrato(
     data: ContratoCreate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Create contract (Admin and Operador only)"""
     return await contratos_service.create_contrato(db, data)
 
 
@@ -52,8 +53,9 @@ async def update_contrato(
     contrato_id: uuid.UUID,
     data: ContratoUpdate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Update contract (Admin and Operador only)"""
     return await contratos_service.update_contrato(db, contrato_id, data)
 
 
@@ -62,9 +64,9 @@ async def upload_pdf_firmado(
     contrato_id: uuid.UUID,
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR, RolUsuario.TECNICO)),
 ):
-    """Upload signed PDF for contract"""
+    """Upload signed PDF for contract (Admin, Operador, and Tecnico)"""
     return await contratos_service.upload_pdf_firmado(db, contrato_id, file)
 
 

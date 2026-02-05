@@ -18,6 +18,9 @@ export const PERMISSIONS: Record<string, Permission> = {
   planes: {
     roles: ["ADMIN", "OPERADOR", "AUDITOR", "SOPORTE"],
   },
+  routers: {
+    roles: ["ADMIN", "OPERADOR"],
+  },
   instalaciones: {
     roles: ["ADMIN", "OPERADOR", "TECNICO", "AUDITOR"],
   },
@@ -52,6 +55,7 @@ export function canWrite(userRole: RolUsuario, module: string): boolean {
     clientes: ["ADMIN", "OPERADOR"],
     planes: ["ADMIN", "OPERADOR"],
     contratos: ["ADMIN", "OPERADOR"],
+    routers: ["ADMIN"],
     pagos: ["ADMIN", "OPERADOR", "SOPORTE"],
     instalaciones: ["ADMIN", "OPERADOR", "TECNICO"],
     usuarios: ["ADMIN"],

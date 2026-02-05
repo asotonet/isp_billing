@@ -11,6 +11,9 @@ import ClienteDetailPage from "@/pages/clientes/ClienteDetailPage";
 import PlanesListPage from "@/pages/planes/PlanesListPage";
 import PlanCreatePage from "@/pages/planes/PlanCreatePage";
 import PlanEditPage from "@/pages/planes/PlanEditPage";
+import RoutersListPage from "@/pages/routers/RoutersListPage";
+import RouterCreatePage from "@/pages/routers/RouterCreatePage";
+import RouterEditPage from "@/pages/routers/RouterEditPage";
 import ContratosListPage from "@/pages/contratos/ContratosListPage";
 import ContratoCreatePage from "@/pages/contratos/ContratoCreatePage";
 import ContratoEditPage from "@/pages/contratos/ContratoEditPage";
@@ -53,6 +56,18 @@ export const router = createBrowserRouter([
           {
             path: "planes/:id/editar",
             element: <RoleProtectedRoute module="planes"><PlanEditPage /></RoleProtectedRoute>
+          },
+          {
+            path: "routers",
+            element: <RoleProtectedRoute module="routers"><RoutersListPage /></RoleProtectedRoute>
+          },
+          {
+            path: "routers/nuevo",
+            element: <RoleProtectedRoute module="routers"><RouterCreatePage /></RoleProtectedRoute>
+          },
+          {
+            path: "routers/:id/editar",
+            element: <RoleProtectedRoute module="routers"><RouterEditPage /></RoleProtectedRoute>
           },
           { path: "contratos", element: <ContratosListPage /> },
           { path: "contratos/nuevo", element: <ContratoCreatePage /> },

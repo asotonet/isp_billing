@@ -6,6 +6,7 @@ from app.models.instalacion import EstadoInstalacion, Instalacion
 from app.models.pago import EstadoPago, MetodoPago, Pago
 from app.models.plan import Plan
 from app.models.role_permission import RolePermission
+from app.models.router import Router
 from app.models.usuario import RolUsuario, Usuario
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
     "Instalacion",
     "EstadoInstalacion",
     "RolePermission",
+    "Router",
 ]

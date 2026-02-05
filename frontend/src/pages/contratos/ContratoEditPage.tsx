@@ -48,6 +48,8 @@ export default function ContratoEditPage() {
               estado: contrato.estado,
               dia_facturacion: contrato.dia_facturacion,
               notas: contrato.notas || undefined,
+              ip_asignada: contrato.ip_asignada || undefined,
+              router_id: contrato.router_id || undefined,
             }}
             onSubmit={handleSubmit}
             isLoading={updateMutation.isPending}

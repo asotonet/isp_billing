@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +15,7 @@ import {
 import UbicacionSelector from "@/components/common/UbicacionSelector";
 import { clienteSchema, type ClienteFormData } from "@/schemas/cliente";
 import type { Cliente } from "@/types/cliente";
+import * as clientesApi from "@/api/clientes";
 
 interface ClienteFormProps {
   defaultValues?: Partial<ClienteFormData>;
@@ -49,7 +52,38 @@ export default function ClienteForm({
   });
 
   const tipoId = watch("tipo_identificacion");
+  const numeroIdentificacion = watch("numero_identificacion");
   const isJuridica = tipoId === "cedula_juridica";
+
+  const [idCheckStatus, setIdCheckStatus] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({ checking: false, available: null, message: "" });
+
+  // Validate numero_identificacion when it changes (only on create)
+  useEffect(() => {
+    if (isEdit || !numeroIdentificacion || numeroIdentificacion.length < 5) {
+      setIdCheckStatus({ checking: false, available: null, message: "" });
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setIdCheckStatus({ checking: true, available: null, message: "" });
+      try {
+        const result = await clientesApi.checkNumeroIdentificacion(numeroIdentificacion);
+        setIdCheckStatus({
+          checking: false,
+          available: result.available,
+          message: result.message,
+        });
+      } catch (error) {
+        setIdCheckStatus({ checking: false, available: null, message: "" });
+      }
+    }, 500); // Debounce 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [numeroIdentificacion, isEdit]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -81,6 +115,21 @@ export default function ClienteForm({
           <Input {...register("numero_identificacion")} disabled={isEdit} />
           {errors.numero_identificacion && (
             <p className="text-sm text-destructive">{errors.numero_identificacion.message}</p>
+          )}
+          {!isEdit && idCheckStatus.checking && (
+            <p className="text-xs text-muted-foreground">Verificando disponibilidad...</p>
+          )}
+          {!isEdit && !idCheckStatus.checking && idCheckStatus.available === true && (
+            <div className="flex items-center gap-1 text-xs text-green-600">
+              <CheckCircle2 className="h-3 w-3" />
+              {idCheckStatus.message}
+            </div>
+          )}
+          {!isEdit && !idCheckStatus.checking && idCheckStatus.available === false && (
+            <div className="flex items-center gap-1 text-xs text-destructive">
+              <AlertCircle className="h-3 w-3" />
+              {idCheckStatus.message}
+            </div>
           )}
         </div>
       </div>

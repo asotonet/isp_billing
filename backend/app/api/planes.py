@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.dependencies import get_current_active_user
-from app.models.usuario import Usuario
+from app.dependencies import get_current_active_user, require_role
+from app.models.usuario import RolUsuario, Usuario
 from app.schemas.common import PaginatedResponse
 from app.schemas.plan import PlanCreate, PlanResponse, PlanUpdate
 from app.services import planes as planes_service
@@ -37,8 +37,9 @@ async def get_plan(
 async def create_plan(
     data: PlanCreate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Create plan (Admin and Operador only)"""
     return await planes_service.create_plan(db, data)
 
 
@@ -47,8 +48,9 @@ async def update_plan(
     plan_id: uuid.UUID,
     data: PlanUpdate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Update plan (Admin and Operador only)"""
     return await planes_service.update_plan(db, plan_id, data)
 
 
@@ -56,6 +58,7 @@ async def update_plan(
 async def deactivate_plan(
     plan_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Deactivate plan (Admin and Operador only)"""
     return await planes_service.deactivate_plan(db, plan_id)

@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.dependencies import get_current_active_user
-from app.models.usuario import Usuario
+from app.dependencies import get_current_active_user, require_role
+from app.models.usuario import RolUsuario, Usuario
 from app.schemas.cliente import ClienteCreate, ClienteResponse, ClienteUpdate
 from app.schemas.common import PaginatedResponse
 from app.services import clientes as clientes_service
@@ -38,8 +38,9 @@ async def get_cliente(
 async def create_cliente(
     data: ClienteCreate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Create client (Admin and Operador only)"""
     return await clientes_service.create_cliente(db, data)
 
 
@@ -48,8 +49,9 @@ async def update_cliente(
     cliente_id: uuid.UUID,
     data: ClienteUpdate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(get_current_active_user),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
 ):
+    """Update client (Admin and Operador only)"""
     return await clientes_service.update_cliente(db, cliente_id, data)
 
 
@@ -57,6 +59,30 @@ async def update_cliente(
 async def deactivate_cliente(
     cliente_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+):
+    """Deactivate client (Admin and Operador only)"""
+    return await clientes_service.deactivate_cliente(db, cliente_id)
+
+
+@router.get("/check-identificacion/{numero_identificacion}")
+async def check_numero_identificacion(
+    numero_identificacion: str,
+    exclude_cliente_id: uuid.UUID | None = Query(None),
+    db: AsyncSession = Depends(get_db),
     _current_user: Usuario = Depends(get_current_active_user),
 ):
-    return await clientes_service.deactivate_cliente(db, cliente_id)
+    """Check if numero_identificacion is available"""
+    return await clientes_service.check_numero_identificacion_available(
+        db, numero_identificacion, exclude_cliente_id
+    )
+
+
+@router.post("/{cliente_id}/activate", response_model=ClienteResponse)
+async def activate_cliente(
+    cliente_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+):
+    """Reactivate client (Admin and Operador only)"""
+    return await clientes_service.activate_cliente(db, cliente_id)

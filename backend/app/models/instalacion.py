@@ -43,6 +43,7 @@ class Instalacion(BaseModel):
         nullable=False
     )
     notas: Mapped[str | None] = mapped_column(Text, nullable=True)
+    motivo_cancelacion: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Temporary client data - used until installation is activated
     temp_tipo_identificacion: Mapped[str | None] = mapped_column(String(20), nullable=True)

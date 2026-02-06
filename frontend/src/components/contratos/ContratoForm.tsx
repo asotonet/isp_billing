@@ -13,6 +13,7 @@ import {
 import { contratoSchema, type ContratoFormData } from "@/schemas/contrato";
 import { useClientes } from "@/hooks/useClientes";
 import { usePlanes } from "@/hooks/usePlanes";
+import { useRouters } from "@/hooks/useRouters";
 
 interface ContratoFormProps {
   defaultValues?: Partial<ContratoFormData>;
@@ -51,6 +52,7 @@ export default function ContratoForm({
 
   const { data: clientesData } = useClientes({ page_size: 100, is_active: true });
   const { data: planesData } = usePlanes({ page_size: 100, is_active: true });
+  const { data: routersData } = useRouters({ page_size: 100, is_active: true });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -132,6 +134,41 @@ export default function ContratoForm({
               ))}
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Router MikroTik (opcional)</Label>
+          <Select
+            value={watch("router_id") || undefined}
+            onValueChange={(v) => setValue("router_id", v || undefined)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sin router" />
+            </SelectTrigger>
+            <SelectContent>
+              {routersData?.items.map((r) => (
+                <SelectItem key={r.id} value={r.id}>
+                  {r.nombre} ({r.ip})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.router_id && (
+            <p className="text-sm text-destructive">{errors.router_id.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>IP Asignada</Label>
+          <Input {...register("ip_asignada")} placeholder="192.168.1.100" />
+          {errors.ip_asignada && (
+            <p className="text-sm text-destructive">{errors.ip_asignada.message}</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            IP que se agregará al address-list del MikroTik
+          </p>
         </div>
       </div>
 

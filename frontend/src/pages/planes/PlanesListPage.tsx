@@ -8,11 +8,13 @@ import DataTable, { type Column } from "@/components/common/DataTable";
 import Pagination from "@/components/common/Pagination";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { usePlanes, useDeactivatePlan } from "@/hooks/usePlanes";
+import { usePermissions } from "@/hooks/usePermissions";
 import { formatCRC } from "@/lib/utils";
 import type { Plan } from "@/types/plan";
 
 export default function PlanesListPage() {
   const navigate = useNavigate();
+  const { canWrite } = usePermissions();
   const [page, setPage] = useState(1);
   const { data, isLoading } = usePlanes({ page, page_size: 20 });
   const deactivateMutation = useDeactivatePlan();
@@ -35,13 +37,17 @@ export default function PlanesListPage() {
       header: "Acciones",
       accessor: (row) => (
         <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/planes/${row.id}/editar`}>Editar</Link>
-          </Button>
-          {row.is_active && (
-            <Button variant="destructive" size="sm" onClick={() => setDeleteId(row.id)}>
-              Desactivar
-            </Button>
+          {canWrite("planes") && (
+            <>
+              <Button variant="outline" size="sm" asChild>
+                <Link to={`/planes/${row.id}/editar`}>Editar</Link>
+              </Button>
+              {row.is_active && (
+                <Button variant="destructive" size="sm" onClick={() => setDeleteId(row.id)}>
+                  Desactivar
+                </Button>
+              )}
+            </>
           )}
         </div>
       ),
@@ -52,11 +58,13 @@ export default function PlanesListPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Planes</h1>
-        <Button asChild>
-          <Link to="/planes/nuevo">
-            <Plus className="h-4 w-4" /> Nuevo Plan
-          </Link>
-        </Button>
+        {canWrite("planes") && (
+          <Button asChild>
+            <Link to="/planes/nuevo">
+              <Plus className="h-4 w-4" /> Nuevo Plan
+            </Link>
+          </Button>
+        )}
       </div>
 
       <DataTable columns={columns} data={data?.items ?? []} isLoading={isLoading} />

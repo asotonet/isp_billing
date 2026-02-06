@@ -14,6 +14,7 @@ import {
 import DataTable, { type Column } from "@/components/common/DataTable";
 import Pagination from "@/components/common/Pagination";
 import { useClientes } from "@/hooks/useClientes";
+import { usePermissions } from "@/hooks/usePermissions";
 import type { Cliente } from "@/types/cliente";
 
 const columns: Column<Cliente>[] = [
@@ -37,6 +38,7 @@ const columns: Column<Cliente>[] = [
 
 export default function ClientesListPage() {
   const navigate = useNavigate();
+  const { canWrite } = usePermissions();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -52,11 +54,13 @@ export default function ClientesListPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Clientes</h1>
-        <Button asChild>
-          <Link to="/clientes/nuevo">
-            <Plus className="h-4 w-4" /> Nuevo Cliente
-          </Link>
-        </Button>
+        {canWrite("clientes") && (
+          <Button asChild>
+            <Link to="/clientes/nuevo">
+              <Plus className="h-4 w-4" /> Nuevo Cliente
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row">

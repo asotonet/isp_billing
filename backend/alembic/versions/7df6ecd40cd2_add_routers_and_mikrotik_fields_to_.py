@@ -1,8 +1,8 @@
-"""initial schema
+"""add routers and mikrotik fields to contratos
 
-Revision ID: 68b14cdd71bd
-Revises: 6dfac583ec0f
-Create Date: 2026-02-04 19:31:45.574558
+Revision ID: 7df6ecd40cd2
+Revises: cfb62b8ae220
+Create Date: 2026-02-05 18:13:08.749186
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '68b14cdd71bd'
-down_revision: Union[str, None] = '6dfac583ec0f'
+revision: str = '7df6ecd40cd2'
+down_revision: Union[str, None] = 'cfb62b8ae220'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

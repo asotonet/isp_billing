@@ -14,6 +14,7 @@ const routeLabels: Record<string, string> = {
   planes: "Planes",
   contratos: "Contratos",
   pagos: "Pagos",
+  usuarios: "Usuarios",
   nuevo: "Nuevo",
   editar: "Editar",
   validar: "Validar",

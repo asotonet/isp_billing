@@ -73,6 +73,26 @@ async def update_cliente(
 ) -> Cliente:
     cliente = await get_cliente(db, cliente_id)
     update_data = data.model_dump(exclude_unset=True)
+
+    # Validate identification format if being updated
+    if "tipo_identificacion" in update_data or "numero_identificacion" in update_data:
+        tipo_identificacion = update_data.get("tipo_identificacion", cliente.tipo_identificacion)
+        numero_identificacion = update_data.get("numero_identificacion", cliente.numero_identificacion)
+
+        if not validate_identificacion(tipo_identificacion.value if hasattr(tipo_identificacion, 'value') else tipo_identificacion, numero_identificacion):
+            from app.core.exceptions import BadRequestError
+            raise BadRequestError("Número de identificación inválido para el tipo seleccionado")
+
+    # Validate uniqueness of numero_identificacion if being updated
+    if "numero_identificacion" in update_data and update_data["numero_identificacion"] != cliente.numero_identificacion:
+        result = await db.execute(
+            select(Cliente)
+            .where(Cliente.numero_identificacion == update_data["numero_identificacion"])
+            .where(Cliente.id != cliente_id)  # Exclude current client
+        )
+        if result.scalar_one_or_none():
+            raise ConflictError("Ya existe un cliente con ese número de identificación")
+
     for key, value in update_data.items():
         setattr(cliente, key, value)
     await db.flush()
@@ -80,9 +100,56 @@ async def update_cliente(
     return cliente
 
 
+async def check_numero_identificacion_available(
+    db: AsyncSession,
+    numero_identificacion: str,
+    exclude_cliente_id: uuid.UUID | None = None
+) -> dict:
+    """
+    Check if a numero_identificacion is available for use
+
+    Returns:
+        dict with keys:
+            - available: bool
+            - message: str
+            - cliente_nombre: str | None (if numero_identificacion is in use)
+    """
+    # Check if numero_identificacion is already assigned to another client
+    query = select(Cliente).where(Cliente.numero_identificacion == numero_identificacion)
+
+    if exclude_cliente_id:
+        query = query.where(Cliente.id != exclude_cliente_id)
+
+    result = await db.execute(query)
+    existing_cliente = result.scalar_one_or_none()
+
+    if existing_cliente:
+        nombre_completo = existing_cliente.razon_social or f"{existing_cliente.nombre} {existing_cliente.apellido1 or ''}".strip()
+        return {
+            "available": False,
+            "message": f"Número de identificación ya registrado para {nombre_completo}",
+            "cliente_nombre": nombre_completo
+        }
+
+    return {
+        "available": True,
+        "message": "Número de identificación disponible",
+        "cliente_nombre": None
+    }
+
+
 async def deactivate_cliente(db: AsyncSession, cliente_id: uuid.UUID) -> Cliente:
     cliente = await get_cliente(db, cliente_id)
     cliente.is_active = False
+    await db.flush()
+    await db.refresh(cliente)
+    return cliente
+
+
+async def activate_cliente(db: AsyncSession, cliente_id: uuid.UUID) -> Cliente:
+    """Reactivate an inactive client"""
+    cliente = await get_cliente(db, cliente_id)
+    cliente.is_active = True
     await db.flush()
     await db.refresh(cliente)
     return cliente

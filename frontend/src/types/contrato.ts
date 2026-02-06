@@ -1,5 +1,6 @@
 import type { Cliente } from "./cliente";
 import type { Plan } from "./plan";
+import type { Router } from "./router";
 
 export type EstadoContrato = "activo" | "suspendido" | "cancelado" | "pendiente";
 
@@ -14,10 +15,13 @@ export interface Contrato {
   dia_facturacion: number;
   notas: string | null;
   pdf_firmado_path: string | null;
+  ip_asignada: string | null;
+  router_id: string | null;
   created_at: string;
   updated_at: string;
   cliente: Cliente;
   plan: Plan;
+  router?: Router;
 }
 
 export interface ContratoCreate {
@@ -28,6 +32,8 @@ export interface ContratoCreate {
   estado?: EstadoContrato;
   dia_facturacion?: number;
   notas?: string;
+  ip_asignada?: string;
+  router_id?: string;
 }
 
 export interface ContratoUpdate {
@@ -36,4 +42,6 @@ export interface ContratoUpdate {
   estado?: EstadoContrato;
   dia_facturacion?: number;
   notas?: string;
+  ip_asignada?: string;
+  router_id?: string;
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import DataTable, { type Column } from "@/components/common/DataTable";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { useCliente, useDeactivateCliente } from "@/hooks/useClientes";
+import { useCliente, useDeactivateCliente, useActivateCliente } from "@/hooks/useClientes";
 import { useContratos } from "@/hooks/useContratos";
 import { usePagos } from "@/hooks/usePagos";
 import { formatCRC, formatDate } from "@/lib/utils";
@@ -58,7 +58,19 @@ export default function ClienteDetailPage() {
   const { data: contratos } = useContratos({ cliente_id: id, page_size: 10 });
   const { data: pagos } = usePagos({ cliente_id: id, page_size: 10 });
   const deactivateMutation = useDeactivateCliente();
+  const activateMutation = useActivateCliente();
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleActivate = () => {
+    activateMutation.mutate(id!, {
+      onSuccess: () => {
+        toast.success("Cliente reactivado exitosamente");
+      },
+      onError: () => {
+        toast.error("Error al reactivar cliente");
+      },
+    });
+  };
 
   if (isLoading) return <LoadingSpinner />;
   if (!cliente) return <p>Cliente no encontrado</p>;
@@ -80,9 +92,18 @@ export default function ClienteDetailPage() {
               <Edit className="h-4 w-4" /> Editar
             </Link>
           </Button>
-          {cliente.is_active && (
+          {cliente.is_active ? (
             <Button variant="destructive" onClick={() => setShowConfirm(true)}>
               <Trash2 className="h-4 w-4" /> Desactivar
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              onClick={handleActivate}
+              disabled={activateMutation.isPending}
+            >
+              <RefreshCw className="h-4 w-4" />
+              {activateMutation.isPending ? "Reactivando..." : "Reactivar"}
             </Button>
           )}
         </div>

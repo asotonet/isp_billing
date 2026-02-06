@@ -31,3 +31,24 @@ export async function deactivateCliente(id: string): Promise<Cliente> {
   const { data } = await api.delete<Cliente>(`/clientes/${id}`);
   return data;
 }
+
+export async function activateCliente(id: string): Promise<Cliente> {
+  const { data } = await api.post<Cliente>(`/clientes/${id}/activate`);
+  return data;
+}
+
+export async function checkNumeroIdentificacion(
+  numeroIdentificacion: string,
+  excludeClienteId?: string
+): Promise<{
+  available: boolean;
+  message: string;
+  cliente_nombre: string | null;
+}> {
+  const params = excludeClienteId ? { exclude_cliente_id: excludeClienteId } : {};
+  const { data } = await api.get(
+    `/clientes/check-identificacion/${numeroIdentificacion}`,
+    { params }
+  );
+  return data;
+}

@@ -4,6 +4,9 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  Server,
+  Shield,
+  UserCog,
   Users,
   Wifi,
   Wrench,
@@ -15,14 +18,18 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/context/AuthContext";
 import { useLogout } from "@/hooks/useAuth";
+import { hasAccess } from "@/utils/permissions";
 
 const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Clientes", href: "/clientes", icon: Users },
-  { label: "Contratos", href: "/contratos", icon: FileText },
-  { label: "Planes", href: "/planes", icon: Wifi },
-  { label: "Instalaciones", href: "/instalaciones", icon: Wrench },
-  { label: "Pagos", href: "/pagos", icon: CreditCard },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, module: "dashboard" },
+  { label: "Clientes", href: "/clientes", icon: Users, module: "clientes" },
+  { label: "Contratos", href: "/contratos", icon: FileText, module: "contratos" },
+  { label: "Planes", href: "/planes", icon: Wifi, module: "planes" },
+  { label: "Routers", href: "/routers", icon: Server, module: "routers" },
+  { label: "Instalaciones", href: "/instalaciones", icon: Wrench, module: "instalaciones" },
+  { label: "Pagos", href: "/pagos", icon: CreditCard, module: "pagos" },
+  { label: "Usuarios", href: "/usuarios", icon: UserCog, module: "usuarios" },
+  { label: "Roles", href: "/roles", icon: Shield, module: "roles" },
 ];
 
 interface SidebarProps {
@@ -43,6 +50,11 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Filtrar navItems según permisos del usuario
+  const filteredNavItems = user
+    ? navItems.filter((item) => hasAccess(user.rol, item.module))
+    : [];
 
   return (
     <>
@@ -78,7 +90,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
-          {navItems.map((item, index) => {
+          {filteredNavItems.map((item, index) => {
             const isActive =
               location.pathname === item.href ||
               (item.href !== "/dashboard" && location.pathname.startsWith(item.href));

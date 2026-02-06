@@ -52,3 +52,13 @@ export function useDeactivateCliente() {
     },
   });
 }
+
+export function useActivateCliente() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => clientesApi.activateCliente(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clientes"] });
+    },
+  });
+}

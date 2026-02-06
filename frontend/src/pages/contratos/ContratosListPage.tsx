@@ -13,6 +13,7 @@ import {
 import DataTable, { type Column } from "@/components/common/DataTable";
 import Pagination from "@/components/common/Pagination";
 import { useContratos } from "@/hooks/useContratos";
+import { usePermissions } from "@/hooks/usePermissions";
 import { formatCRC, formatDate } from "@/lib/utils";
 import type { Contrato, EstadoContrato } from "@/types/contrato";
 
@@ -23,34 +24,8 @@ const estadoVariants: Record<string, "success" | "warning" | "destructive" | "de
   pendiente: "default",
 };
 
-const columns: Column<Contrato>[] = [
-  { header: "N° Contrato", accessor: "numero_contrato" },
-  {
-    header: "Cliente",
-    accessor: (row) =>
-      row.cliente?.razon_social ||
-      `${row.cliente?.nombre || ""} ${row.cliente?.apellido1 || ""}`.trim(),
-  },
-  { header: "Plan", accessor: (row) => row.plan?.nombre ?? "-" },
-  { header: "Precio", accessor: (row) => formatCRC(row.plan?.precio_mensual ?? 0) },
-  { header: "Inicio", accessor: (row) => formatDate(row.fecha_inicio) },
-  {
-    header: "Estado",
-    accessor: (row) => <Badge variant={estadoVariants[row.estado]}>{row.estado}</Badge>,
-  },
-  {
-    header: "Acciones",
-    accessor: (row) => (
-      <div onClick={(e) => e.stopPropagation()}>
-        <Button variant="outline" size="sm" asChild>
-          <Link to={`/contratos/${row.id}/editar`}>Editar</Link>
-        </Button>
-      </div>
-    ),
-  },
-];
-
 export default function ContratosListPage() {
+  const { canWrite } = usePermissions();
   const [page, setPage] = useState(1);
   const [estado, setEstado] = useState<string>("all");
 
@@ -60,24 +35,55 @@ export default function ContratosListPage() {
     estado: estado === "all" ? undefined : (estado as EstadoContrato),
   });
 
+  const columns: Column<Contrato>[] = [
+    { header: "N° Contrato", accessor: "numero_contrato" },
+    {
+      header: "Cliente",
+      accessor: (row) =>
+        row.cliente?.razon_social ||
+        `${row.cliente?.nombre || ""} ${row.cliente?.apellido1 || ""}`.trim(),
+    },
+    { header: "Plan", accessor: (row) => row.plan?.nombre ?? "-" },
+    { header: "Precio", accessor: (row) => formatCRC(row.plan?.precio_mensual ?? 0) },
+    { header: "Inicio", accessor: (row) => formatDate(row.fecha_inicio) },
+    {
+      header: "Estado",
+      accessor: (row) => <Badge variant={estadoVariants[row.estado]}>{row.estado}</Badge>,
+    },
+    {
+      header: "Acciones",
+      accessor: (row) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          {canWrite("contratos") && (
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/contratos/${row.id}/editar`}>Editar</Link>
+            </Button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Contratos</h1>
-        <Button asChild>
-          <Link to="/contratos/nuevo">
-            <Plus className="h-4 w-4" /> Nuevo Contrato
-          </Link>
-        </Button>
+        {canWrite("contratos") && (
+          <Button asChild>
+            <Link to="/contratos/nuevo">
+              <Plus className="h-4 w-4" /> Nuevo Contrato
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="flex gap-4">
-        <Select value={estado} onValueChange={(v) => { setEstado(v); setPage(1); }}>
-          <SelectTrigger className="w-48">
+        <Select value={estado} onValueChange={setEstado}>
+          <SelectTrigger className="w-[200px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos los estados</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="activo">Activo</SelectItem>
             <SelectItem value="suspendido">Suspendido</SelectItem>
             <SelectItem value="cancelado">Cancelado</SelectItem>
@@ -87,6 +93,7 @@ export default function ContratosListPage() {
       </div>
 
       <DataTable columns={columns} data={data?.items ?? []} isLoading={isLoading} />
+
       <Pagination page={page} totalPages={data?.total_pages ?? 1} onPageChange={setPage} />
     </div>
   );

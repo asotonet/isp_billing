@@ -15,6 +15,20 @@ async def lifespan(app: FastAPI):
     os.makedirs("/app/uploads/contratos/firmados", exist_ok=True)
 
     await init_redis()
+
+    # Initialize role permissions if needed (skip if table doesn't exist yet)
+    try:
+        from app.database import async_session
+        from app.services.role_permissions import initialize_default_permissions
+
+        async with async_session() as db:
+            await initialize_default_permissions(db)
+            await db.commit()
+    except Exception as e:
+        # Si la tabla no existe (primera vez), ignorar el error
+        # La inicialización se puede hacer manualmente después con el endpoint
+        print(f"Note: Could not initialize permissions on startup: {e}")
+
     yield
     await close_redis()
 

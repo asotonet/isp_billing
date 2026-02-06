@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,12 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useClientes } from "@/hooks/useClientes";
+import { useRouters } from "@/hooks/useRouters";
 import { useActivarInstalacion } from "@/hooks/useInstalaciones";
 import {
   instalacionActivarSchema,
   type InstalacionActivarFormData,
 } from "@/schemas/instalacion";
+import * as routersApi from "@/api/routers";
 import { toast } from "sonner";
 
 interface InstalacionActivarDialogProps {
@@ -59,6 +64,16 @@ export function InstalacionActivarDialog({
 
   const crearCliente = watch("crear_cliente");
   const estadoContrato = watch("estado_contrato");
+  const selectedRouterId = watch("router_id");
+  const ipAsignada = watch("ip_asignada");
+
+  const [ipCheckStatus, setIpCheckStatus] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({ checking: false, available: null, message: "" });
+
+  const [suggestingIp, setSuggestingIp] = useState(false);
 
   const { data: clientesData } = useClientes({
     page: 1,
@@ -66,7 +81,58 @@ export function InstalacionActivarDialog({
     is_active: true,
   });
 
+  const { data: routersData } = useRouters({
+    page: 1,
+    page_size: 100,
+    is_active: true,
+  });
+
   const activarMutation = useActivarInstalacion();
+
+  // Get selected router details
+  const selectedRouter = routersData?.items.find((r) => r.id === selectedRouterId);
+
+  // Validate IP when it changes
+  useEffect(() => {
+    if (!selectedRouterId || !ipAsignada || ipAsignada.length < 7) {
+      setIpCheckStatus({ checking: false, available: null, message: "" });
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setIpCheckStatus({ checking: true, available: null, message: "" });
+      try {
+        const result = await routersApi.checkIpAvailable(selectedRouterId, ipAsignada);
+        setIpCheckStatus({
+          checking: false,
+          available: result.available,
+          message: result.message,
+        });
+      } catch (error) {
+        setIpCheckStatus({ checking: false, available: null, message: "" });
+      }
+    }, 500); // Debounce 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [selectedRouterId, ipAsignada]);
+
+  const handleSuggestIp = async () => {
+    if (!selectedRouterId) {
+      toast.error("Primero selecciona un router");
+      return;
+    }
+
+    setSuggestingIp(true);
+    try {
+      const result = await routersApi.getNextAvailableIp(selectedRouterId);
+      setValue("ip_asignada", result.ip_address);
+      toast.success(`IP sugerida: ${result.ip_address}`);
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Error al obtener IP sugerida");
+    } finally {
+      setSuggestingIp(false);
+    }
+  };
 
   const onSubmit = (data: InstalacionActivarFormData) => {
     activarMutation.mutate(
@@ -189,6 +255,77 @@ export function InstalacionActivarDialog({
                 )}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Router MikroTik</Label>
+            <Select
+              value={watch("router_id") || ""}
+              onValueChange={(val) => setValue("router_id", val)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona un router" />
+              </SelectTrigger>
+              <SelectContent>
+                {routersData?.items.map((router) => (
+                  <SelectItem key={router.id} value={router.id}>
+                    {router.nombre} ({router.ip})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.router_id && (
+              <p className="text-sm text-destructive">
+                {errors.router_id.message}
+              </p>
+            )}
+            {selectedRouter?.cidr_disponibles && (
+              <Alert>
+                <AlertDescription className="text-xs">
+                  <strong>Rangos CIDR:</strong> {selectedRouter.cidr_disponibles}
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>IP Asignada</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleSuggestIp}
+                disabled={!selectedRouterId || suggestingIp}
+              >
+                <Sparkles className="h-3 w-3 mr-1" />
+                {suggestingIp ? "Buscando..." : "Sugerir IP"}
+              </Button>
+            </div>
+            <Input
+              {...register("ip_asignada")}
+              placeholder="192.168.1.100"
+            />
+            {errors.ip_asignada && (
+              <p className="text-sm text-destructive">
+                {errors.ip_asignada.message}
+              </p>
+            )}
+            {ipCheckStatus.checking && (
+              <p className="text-xs text-muted-foreground">Verificando disponibilidad...</p>
+            )}
+            {!ipCheckStatus.checking && ipCheckStatus.available === true && (
+              <div className="flex items-center gap-1 text-xs text-green-600">
+                <CheckCircle2 className="h-3 w-3" />
+                {ipCheckStatus.message}
+              </div>
+            )}
+            {!ipCheckStatus.checking && ipCheckStatus.available === false && (
+              <div className="flex items-center gap-1 text-xs text-destructive">
+                <AlertCircle className="h-3 w-3" />
+                {ipCheckStatus.message}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 justify-end">

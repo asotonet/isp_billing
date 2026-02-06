@@ -36,6 +36,13 @@ class Contrato(BaseModel):
     notas: Mapped[str | None] = mapped_column(Text, nullable=True)
     pdf_firmado_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
+    # MikroTik integration fields
+    ip_asignada: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    router_id: Mapped[str | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("routers.id", ondelete="SET NULL"), nullable=True
+    )
+
     cliente: Mapped["Cliente"] = relationship(back_populates="contratos")  # noqa: F821
     plan: Mapped["Plan"] = relationship(back_populates="contratos")  # noqa: F821
     pagos: Mapped[list["Pago"]] = relationship(back_populates="contrato")  # noqa: F821
+    router: Mapped["Router"] = relationship()  # noqa: F821

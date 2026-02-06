@@ -16,6 +16,8 @@ class ContratoBase(BaseModel):
     estado: EstadoContrato = EstadoContrato.ACTIVO
     dia_facturacion: int = Field(1, ge=1, le=28)
     notas: str | None = None
+    ip_asignada: str | None = None
+    router_id: uuid.UUID | None = None
 
 
 class ContratoCreate(ContratoBase):
@@ -28,6 +30,8 @@ class ContratoUpdate(BaseModel):
     estado: EstadoContrato | None = None
     dia_facturacion: int | None = Field(None, ge=1, le=28)
     notas: str | None = None
+    ip_asignada: str | None = None
+    router_id: uuid.UUID | None = None
 
 
 class ContratoResponse(ContratoBase):

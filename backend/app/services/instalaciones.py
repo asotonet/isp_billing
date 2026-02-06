@@ -59,9 +59,15 @@ async def list_instalaciones(
     plan_id: uuid.UUID | None = None,
 ) -> PaginatedResponse:
     """List installations with pagination and filters"""
+    from app.models.contrato import Contrato
+    from app.models.cliente import Cliente
+
     query = (
         select(Instalacion)
-        .options(selectinload(Instalacion.plan), selectinload(Instalacion.contrato))
+        .options(
+            selectinload(Instalacion.plan),
+            selectinload(Instalacion.contrato).selectinload(Contrato.cliente),
+        )
         .order_by(Instalacion.created_at.desc())
     )
 
@@ -75,9 +81,15 @@ async def list_instalaciones(
 
 async def get_instalacion(db: AsyncSession, instalacion_id: uuid.UUID) -> Instalacion:
     """Get installation by ID with relationships loaded"""
+    from app.models.contrato import Contrato
+    from app.models.cliente import Cliente
+
     result = await db.execute(
         select(Instalacion)
-        .options(selectinload(Instalacion.plan), selectinload(Instalacion.contrato))
+        .options(
+            selectinload(Instalacion.plan),
+            selectinload(Instalacion.contrato).selectinload(Contrato.cliente),
+        )
         .where(Instalacion.id == instalacion_id)
     )
     instalacion = result.scalar_one_or_none()
@@ -138,6 +150,13 @@ async def update_instalacion(
             raise BadRequestError(
                 f"Transición de estado inválida: {current_estado.value} -> {new_estado.value}"
             )
+
+        # Validate motivo_cancelacion is provided when canceling
+        if new_estado == EstadoInstalacion.CANCELADA:
+            if not update_data.get("motivo_cancelacion"):
+                raise BadRequestError(
+                    "El motivo_cancelacion es requerido cuando se cancela una instalación"
+                )
 
     for key, value in update_data.items():
         setattr(instalacion, key, value)
@@ -210,13 +229,15 @@ async def activar_instalacion(
 
         cliente_id = cliente.id
 
-    # Create contract
+    # Create contract with router and IP
     contrato_data = ContratoCreate(
         cliente_id=cliente_id,
         plan_id=instalacion.plan_id,
         fecha_inicio=data.fecha_inicio_contrato,
         dia_facturacion=data.dia_facturacion,
         estado=data.estado_contrato,
+        router_id=data.router_id,
+        ip_asignada=data.ip_asignada,
     )
     contrato = await contratos_service.create_contrato(db, contrato_data)
 

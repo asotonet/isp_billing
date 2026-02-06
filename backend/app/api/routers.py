@@ -117,3 +117,26 @@ async def activate_router(
 ):
     """Activate router (Admin only)"""
     return await routers_service.activate_router(db, router_id)
+
+
+@router.get("/{router_id}/next-available-ip")
+async def get_next_available_ip(
+    router_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+):
+    """Get next available IP address from router's CIDR ranges (Admin and Operador only)"""
+    ip_address = await routers_service.get_next_available_ip(db, router_id)
+    return {"ip_address": ip_address}
+
+
+@router.get("/{router_id}/check-ip/{ip_address}")
+async def check_ip_available(
+    router_id: uuid.UUID,
+    ip_address: str,
+    exclude_contrato_id: uuid.UUID | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+):
+    """Check if IP address is available for assignment (Admin and Operador only)"""
+    return await routers_service.check_ip_available(db, router_id, ip_address, exclude_contrato_id)

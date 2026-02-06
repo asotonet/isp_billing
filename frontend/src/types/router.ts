@@ -6,6 +6,7 @@ export interface Router {
   puerto: number;
   ssl: boolean;
   is_active: boolean;
+  cidr_disponibles: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -18,6 +19,7 @@ export interface RouterCreate {
   puerto?: number;
   ssl?: boolean;
   is_active?: boolean;
+  cidr_disponibles?: string;
 }
 
 export interface RouterUpdate {
@@ -28,6 +30,7 @@ export interface RouterUpdate {
   puerto?: number;
   ssl?: boolean;
   is_active?: boolean;
+  cidr_disponibles?: string;
 }
 
 export interface RouterTestConnectionResponse {

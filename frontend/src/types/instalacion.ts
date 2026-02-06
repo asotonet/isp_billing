@@ -19,6 +19,7 @@ export interface Instalacion {
   tecnico_asignado: string | null;
   estado: EstadoInstalacion;
   notas: string | null;
+  motivo_cancelacion: string | null;
 
   temp_tipo_identificacion: TipoIdentificacion | null;
   temp_numero_identificacion: string | null;
@@ -68,6 +69,7 @@ export interface InstalacionUpdate {
   tecnico_asignado?: string;
   estado?: EstadoInstalacion;
   notas?: string;
+  motivo_cancelacion?: string;
 }
 
 export interface InstalacionActivarRequest {
@@ -76,4 +78,6 @@ export interface InstalacionActivarRequest {
   fecha_inicio_contrato: string;
   dia_facturacion?: number;
   estado_contrato?: "activo" | "suspendido" | "cancelado" | "pendiente";
+  router_id: string;
+  ip_asignada: string;
 }

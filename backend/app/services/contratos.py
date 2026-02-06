@@ -241,6 +241,19 @@ async def create_contrato(db: AsyncSession, data: ContratoCreate) -> Contrato:
         if not router:
             raise BadRequestError("Router no encontrado")
 
+    # Validate IP is not already assigned to another contract on the same router
+    if data.router_id and data.ip_asignada:
+        result = await db.execute(
+            select(Contrato)
+            .where(Contrato.router_id == data.router_id)
+            .where(Contrato.ip_asignada == data.ip_asignada)
+        )
+        existing_contrato = result.scalar_one_or_none()
+        if existing_contrato:
+            raise BadRequestError(
+                f"La IP {data.ip_asignada} ya está asignada al contrato {existing_contrato.numero_contrato}"
+            )
+
     numero_contrato = await _generate_numero_contrato(db)
 
     contrato = Contrato(
@@ -280,6 +293,24 @@ async def update_contrato(
         router = result.scalar_one_or_none()
         if not router:
             raise BadRequestError("Router no encontrado")
+
+    # Determine final router_id and ip_asignada after update
+    final_router_id = update_data.get("router_id", contrato.router_id)
+    final_ip_asignada = update_data.get("ip_asignada", contrato.ip_asignada)
+
+    # Validate IP is not already assigned to another contract on the same router
+    if final_router_id and final_ip_asignada:
+        result = await db.execute(
+            select(Contrato)
+            .where(Contrato.router_id == final_router_id)
+            .where(Contrato.ip_asignada == final_ip_asignada)
+            .where(Contrato.id != contrato_id)  # Exclude current contract
+        )
+        existing_contrato = result.scalar_one_or_none()
+        if existing_contrato:
+            raise BadRequestError(
+                f"La IP {final_ip_asignada} ya está asignada al contrato {existing_contrato.numero_contrato}"
+            )
 
     for key, value in update_data.items():
         setattr(contrato, key, value)

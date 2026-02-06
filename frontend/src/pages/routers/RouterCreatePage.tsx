@@ -16,7 +16,16 @@ export default function RouterCreatePage() {
         navigate("/routers");
       },
       onError: (err: any) => {
-        toast.error(err.response?.data?.detail || "Error al crear router");
+        const errorDetail = err.response?.data?.detail;
+        let errorMessage = "Error al crear router";
+
+        if (typeof errorDetail === "string") {
+          errorMessage = errorDetail;
+        } else if (Array.isArray(errorDetail)) {
+          errorMessage = errorDetail.map((e: any) => e.msg).join(", ");
+        }
+
+        toast.error(errorMessage);
       },
     });
   };

@@ -1,11 +1,14 @@
 import uuid
+import ipaddress
+from typing import Set
 
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.encryption import encryption_service
-from app.core.exceptions import ConflictError, NotFoundError
+from app.core.exceptions import ConflictError, NotFoundError, BadRequestError
 from app.models.router import Router
+from app.models.contrato import Contrato
 from app.schemas.common import PaginatedResponse
 from app.schemas.router import RouterCreate, RouterUpdate
 from app.utils.pagination import paginate
@@ -70,6 +73,7 @@ async def create_router(db: AsyncSession, data: RouterCreate) -> Router:
         puerto=data.puerto,
         ssl=data.ssl,
         is_active=data.is_active,
+        cidr_disponibles=data.cidr_disponibles,
     )
     db.add(router)
     await db.flush()
@@ -134,3 +138,125 @@ async def activate_router(db: AsyncSession, router_id: uuid.UUID) -> Router:
 def decrypt_router_password(router: Router) -> str:
     """Decrypt router password for MikroTik connection"""
     return encryption_service.decrypt(router.hashed_password)
+
+
+async def get_used_ips_for_router(db: AsyncSession, router_id: uuid.UUID) -> Set[str]:
+    """Get all IP addresses currently assigned to contracts for a specific router"""
+    result = await db.execute(
+        select(Contrato.ip_asignada)
+        .where(Contrato.router_id == router_id)
+        .where(Contrato.ip_asignada.isnot(None))
+    )
+    ips = result.scalars().all()
+    return set(ips)
+
+
+async def get_next_available_ip(db: AsyncSession, router_id: uuid.UUID) -> str:
+    """
+    Get next available IP address from router's CIDR ranges
+
+    Returns the first available IP in ascending order from the configured CIDR ranges.
+    Skips network address, broadcast address, and already assigned IPs.
+    """
+    router = await get_router(db, router_id)
+
+    if not router.cidr_disponibles:
+        raise BadRequestError("El router no tiene rangos CIDR configurados")
+
+    # Parse CIDR ranges
+    cidr_ranges = [cidr.strip() for cidr in router.cidr_disponibles.split(",")]
+
+    # Get already used IPs
+    used_ips = await get_used_ips_for_router(db, router_id)
+
+    # Find first available IP across all CIDR ranges
+    for cidr_str in cidr_ranges:
+        try:
+            network = ipaddress.ip_network(cidr_str, strict=False)
+
+            # Iterate through all hosts in the network
+            for ip in network.hosts():
+                ip_str = str(ip)
+                if ip_str not in used_ips:
+                    return ip_str
+
+        except ValueError as e:
+            # Skip invalid CIDR notation
+            continue
+
+    raise BadRequestError("No hay direcciones IP disponibles en los rangos CIDR configurados")
+
+
+async def check_ip_available(
+    db: AsyncSession,
+    router_id: uuid.UUID,
+    ip_address: str,
+    exclude_contrato_id: uuid.UUID | None = None
+) -> dict:
+    """
+    Check if an IP address is available for assignment
+
+    Returns:
+        dict with keys:
+            - available: bool
+            - message: str
+            - contrato_numero: str | None (if IP is in use)
+    """
+    # Validate IP format
+    try:
+        ipaddress.ip_address(ip_address)
+    except ValueError:
+        return {
+            "available": False,
+            "message": "Formato de IP inválido",
+            "contrato_numero": None
+        }
+
+    # Check if IP is already assigned to another contract on this router
+    query = (
+        select(Contrato)
+        .where(Contrato.router_id == router_id)
+        .where(Contrato.ip_asignada == ip_address)
+    )
+
+    if exclude_contrato_id:
+        query = query.where(Contrato.id != exclude_contrato_id)
+
+    result = await db.execute(query)
+    existing_contrato = result.scalar_one_or_none()
+
+    if existing_contrato:
+        return {
+            "available": False,
+            "message": f"IP ya asignada al contrato {existing_contrato.numero_contrato}",
+            "contrato_numero": existing_contrato.numero_contrato
+        }
+
+    # Check if IP is within configured CIDR ranges
+    router = await get_router(db, router_id)
+    if router.cidr_disponibles:
+        cidr_ranges = [cidr.strip() for cidr in router.cidr_disponibles.split(",")]
+        ip_obj = ipaddress.ip_address(ip_address)
+
+        in_range = False
+        for cidr_str in cidr_ranges:
+            try:
+                network = ipaddress.ip_network(cidr_str, strict=False)
+                if ip_obj in network:
+                    in_range = True
+                    break
+            except ValueError:
+                continue
+
+        if not in_range:
+            return {
+                "available": True,
+                "message": "⚠️ IP fuera de los rangos CIDR configurados",
+                "contrato_numero": None
+            }
+
+    return {
+        "available": True,
+        "message": "IP disponible",
+        "contrato_numero": None
+    }

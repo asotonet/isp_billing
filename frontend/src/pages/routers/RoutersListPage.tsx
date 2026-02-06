@@ -49,6 +49,14 @@ export default function RoutersListPage() {
       accessor: (row) => `${row.puerto}${row.ssl ? " (SSL)" : ""}`,
     },
     {
+      header: "CIDR Disponibles",
+      accessor: (row) => (
+        <span className="text-sm text-muted-foreground">
+          {row.cidr_disponibles || "-"}
+        </span>
+      ),
+    },
+    {
       header: "Estado",
       accessor: (row) => (
         <Badge variant={row.is_active ? "success" : "secondary"}>

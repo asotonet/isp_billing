@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { InstalacionStatusBadge } from "@/components/instalaciones/InstalacionStatusBadge";
 import { InstalacionActivarDialog } from "@/components/instalaciones/InstalacionActivarDialog";
+import { InstalacionCancelarDialog } from "@/components/instalaciones/InstalacionCancelarDialog";
 import { useInstalacion, useUpdateInstalacion } from "@/hooks/useInstalaciones";
 import * as instalacionesApi from "@/api/instalaciones";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ export default function InstalacionDetailPage() {
   const { data: instalacion, isLoading } = useInstalacion(id!);
   const updateMutation = useUpdateInstalacion();
   const [activarDialogOpen, setActivarDialogOpen] = useState(false);
+  const [cancelarDialogOpen, setCancelarDialogOpen] = useState(false);
 
   if (isLoading) return <LoadingSpinner />;
   if (!instalacion) return <p>Instalación no encontrada</p>;
@@ -242,7 +244,7 @@ export default function InstalacionDetailPage() {
                   Activar Instalación
                 </Button>
                 <Button
-                  onClick={() => handleChangeEstado("cancelada")}
+                  onClick={() => setCancelarDialogOpen(true)}
                   variant="destructive"
                 >
                   Cancelar
@@ -262,7 +264,7 @@ export default function InstalacionDetailPage() {
                   Activar Instalación
                 </Button>
                 <Button
-                  onClick={() => handleChangeEstado("cancelada")}
+                  onClick={() => setCancelarDialogOpen(true)}
                   variant="destructive"
                 >
                   Cancelar
@@ -285,7 +287,7 @@ export default function InstalacionDetailPage() {
                   Volver a Programada
                 </Button>
                 <Button
-                  onClick={() => handleChangeEstado("cancelada")}
+                  onClick={() => setCancelarDialogOpen(true)}
                   variant="destructive"
                 >
                   Cancelar
@@ -307,9 +309,17 @@ export default function InstalacionDetailPage() {
             )}
 
             {instalacion.estado === "cancelada" && (
-              <p className="text-muted-foreground">
-                Esta instalación fue cancelada.
-              </p>
+              <div className="space-y-2">
+                <p className="text-muted-foreground">
+                  Esta instalación fue cancelada.
+                </p>
+                {instalacion.motivo_cancelacion && (
+                  <div className="rounded-md border p-3 bg-muted">
+                    <p className="text-sm font-medium mb-1">Motivo de cancelación:</p>
+                    <p className="text-sm">{instalacion.motivo_cancelacion}</p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </CardContent>
@@ -319,6 +329,12 @@ export default function InstalacionDetailPage() {
         instalacionId={instalacion.id}
         open={activarDialogOpen}
         onOpenChange={setActivarDialogOpen}
+      />
+
+      <InstalacionCancelarDialog
+        instalacionId={instalacion.id}
+        open={cancelarDialogOpen}
+        onOpenChange={setCancelarDialogOpen}
       />
     </div>
   );

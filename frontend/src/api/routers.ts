@@ -52,3 +52,27 @@ export async function activateRouter(id: string): Promise<Router> {
   const { data } = await api.post<Router>(`/routers/${id}/activate`);
   return data;
 }
+
+export async function getNextAvailableIp(routerId: string): Promise<{ ip_address: string }> {
+  const { data } = await api.get<{ ip_address: string }>(
+    `/routers/${routerId}/next-available-ip`
+  );
+  return data;
+}
+
+export async function checkIpAvailable(
+  routerId: string,
+  ipAddress: string,
+  excludeContratoId?: string
+): Promise<{
+  available: boolean;
+  message: string;
+  contrato_numero: string | null;
+}> {
+  const params = excludeContratoId ? { exclude_contrato_id: excludeContratoId } : {};
+  const { data } = await api.get(
+    `/routers/${routerId}/check-ip/${ipAddress}`,
+    { params }
+  );
+  return data;
+}

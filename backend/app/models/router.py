@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Integer, String
+from sqlalchemy import Boolean, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import BaseModel
@@ -17,3 +17,4 @@ class Router(BaseModel):
     puerto: Mapped[int] = mapped_column(Integer, default=8728, nullable=False)
     ssl: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    cidr_disponibles: Mapped[str | None] = mapped_column(Text, nullable=True)  # Comma-separated CIDR ranges

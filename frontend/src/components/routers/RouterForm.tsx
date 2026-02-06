@@ -69,6 +69,20 @@ export default function RouterForm({
         </div>
       </div>
 
+      <div className="space-y-2">
+        <Label>Rangos CIDR Disponibles</Label>
+        <Input
+          {...register("cidr_disponibles")}
+          placeholder="192.168.1.0/24, 10.0.0.0/24, 172.16.0.0/16"
+        />
+        {errors.cidr_disponibles && (
+          <p className="text-sm text-destructive">{errors.cidr_disponibles.message}</p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Ingresa los rangos CIDR separados por comas (ej: 192.168.1.0/24, 10.0.0.0/24)
+        </p>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Puerto API</Label>

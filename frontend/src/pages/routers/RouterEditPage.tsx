@@ -16,15 +16,30 @@ export default function RouterEditPage() {
   if (!router) return <p>Router no encontrado</p>;
 
   const handleSubmit = (data: RouterFormData) => {
+    // Si password está vacío en edición, no enviarlo
+    const submitData = { ...data };
+    if (submitData.password === "") {
+      delete submitData.password;
+    }
+
     updateMutation.mutate(
-      { id: id!, data },
+      { id: id!, data: submitData },
       {
         onSuccess: () => {
           toast.success("Router actualizado");
           navigate("/routers");
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.detail || "Error al actualizar");
+          const errorDetail = err.response?.data?.detail;
+          let errorMessage = "Error al actualizar";
+
+          if (typeof errorDetail === "string") {
+            errorMessage = errorDetail;
+          } else if (Array.isArray(errorDetail)) {
+            errorMessage = errorDetail.map((e: any) => e.msg).join(", ");
+          }
+
+          toast.error(errorMessage);
         },
       }
     );

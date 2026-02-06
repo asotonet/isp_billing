@@ -14,6 +14,7 @@ export const routerSchema = z.object({
   puerto: z.coerce.number().int().min(1).max(65535).default(8728),
   ssl: z.boolean().default(false),
   is_active: z.boolean().default(true),
+  cidr_disponibles: z.string().optional().or(z.literal("")),
 });
 
 export const routerUpdateSchema = z.object({
@@ -24,6 +25,7 @@ export const routerUpdateSchema = z.object({
   puerto: z.coerce.number().int().min(1).max(65535).optional(),
   ssl: z.boolean().optional(),
   is_active: z.boolean().optional(),
+  cidr_disponibles: z.string().optional().or(z.literal("")),
 });
 
 export type RouterFormData = z.infer<typeof routerSchema>;

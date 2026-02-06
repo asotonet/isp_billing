@@ -11,6 +11,7 @@ class RouterBase(BaseModel):
     puerto: int = Field(default=8728, ge=1, le=65535, description="Puerto de API")
     ssl: bool = Field(default=False, description="Usar SSL/TLS para la conexión")
     is_active: bool = Field(default=True, description="Router activo")
+    cidr_disponibles: str | None = Field(None, description="Rangos CIDR disponibles separados por comas (ej: 192.168.1.0/24,10.0.0.0/24)")
 
 
 class RouterCreate(RouterBase):
@@ -25,6 +26,7 @@ class RouterUpdate(BaseModel):
     puerto: int | None = Field(None, ge=1, le=65535)
     ssl: bool | None = None
     is_active: bool | None = None
+    cidr_disponibles: str | None = None
 
 
 class RouterResponse(RouterBase):

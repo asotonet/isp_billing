@@ -47,6 +47,12 @@ export const instalacionActivarSchema = z.object({
   estado_contrato: z
     .enum(["activo", "suspendido", "cancelado", "pendiente"])
     .default("activo"),
+  router_id: z.string().min(1, "Router es requerido"),
+  ip_asignada: z
+    .string()
+    .min(7, "IP es requerida")
+    .max(15)
+    .regex(/^(\d{1,3}\.){3}\d{1,3}$/, "IP inválida"),
 });
 
 export type InstalacionSolicitudFormData = z.infer<

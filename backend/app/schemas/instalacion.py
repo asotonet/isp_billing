@@ -52,6 +52,7 @@ class InstalacionUpdate(BaseModel):
     tecnico_asignado: str | None = None
     estado: EstadoInstalacion | None = None
     notas: str | None = None
+    motivo_cancelacion: str | None = None
 
 
 class InstalacionResponse(BaseModel):
@@ -64,6 +65,7 @@ class InstalacionResponse(BaseModel):
     tecnico_asignado: str | None
     estado: EstadoInstalacion
     notas: str | None
+    motivo_cancelacion: str | None
 
     temp_tipo_identificacion: str | None
     temp_numero_identificacion: str | None
@@ -97,6 +99,8 @@ class InstalacionActivarRequest(BaseModel):
     fecha_inicio_contrato: date
     dia_facturacion: int = Field(default=1, ge=1, le=28)
     estado_contrato: EstadoContrato = EstadoContrato.ACTIVO
+    router_id: uuid.UUID
+    ip_asignada: str = Field(..., min_length=7, max_length=15)
 
 
 # Resolve forward references

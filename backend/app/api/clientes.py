@@ -63,3 +63,26 @@ async def deactivate_cliente(
 ):
     """Deactivate client (Admin and Operador only)"""
     return await clientes_service.deactivate_cliente(db, cliente_id)
+
+
+@router.get("/check-identificacion/{numero_identificacion}")
+async def check_numero_identificacion(
+    numero_identificacion: str,
+    exclude_cliente_id: uuid.UUID | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(get_current_active_user),
+):
+    """Check if numero_identificacion is available"""
+    return await clientes_service.check_numero_identificacion_available(
+        db, numero_identificacion, exclude_cliente_id
+    )
+
+
+@router.post("/{cliente_id}/activate", response_model=ClienteResponse)
+async def activate_cliente(
+    cliente_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+):
+    """Reactivate client (Admin and Operador only)"""
+    return await clientes_service.activate_cliente(db, cliente_id)

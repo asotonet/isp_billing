@@ -7,10 +7,13 @@ export function useRouters(params: {
   page_size?: number;
   search?: string;
   is_active?: boolean;
+  refetchInterval?: number;
 }) {
+  const { refetchInterval, ...apiParams } = params;
   return useQuery({
-    queryKey: ["routers", params],
-    queryFn: () => routersApi.getRouters(params),
+    queryKey: ["routers", apiParams],
+    queryFn: () => routersApi.getRouters(apiParams),
+    refetchInterval: refetchInterval,
   });
 }
 

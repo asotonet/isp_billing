@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.dependencies import require_admin, require_role
-from app.models.usuario import RolUsuario, Usuario
+from app.dependencies import require_admin, require_permission
+from app.models.usuario import Usuario
 from app.schemas.common import PaginatedResponse
 from app.schemas.router import (
     RouterCreate,
@@ -26,9 +26,9 @@ async def list_routers(
     search: str | None = None,
     is_active: bool | None = None,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+    _current_user: Usuario = Depends(require_permission("routers")),
 ):
-    """List routers (Admin and Operador only)"""
+    """List routers (requires read permission on routers module)"""
     return await routers_service.list_routers(db, page, page_size, search, is_active)
 
 
@@ -36,9 +36,9 @@ async def list_routers(
 async def get_router(
     router_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+    _current_user: Usuario = Depends(require_permission("routers")),
 ):
-    """Get router by ID (Admin and Operador only)"""
+    """Get router by ID (requires read permission on routers module)"""
     return await routers_service.get_router(db, router_id)
 
 
@@ -46,9 +46,9 @@ async def get_router(
 async def create_router(
     data: RouterCreate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_admin),
+    _current_user: Usuario = Depends(require_permission("routers", require_write=True)),
 ):
-    """Create new router (Admin only)"""
+    """Create new router (requires write permission on routers module)"""
     return await routers_service.create_router(db, data)
 
 
@@ -57,9 +57,9 @@ async def update_router(
     router_id: uuid.UUID,
     data: RouterUpdate,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_admin),
+    _current_user: Usuario = Depends(require_permission("routers", require_write=True)),
 ):
-    """Update router (Admin only)"""
+    """Update router (requires write permission on routers module)"""
     return await routers_service.update_router(db, router_id, data)
 
 
@@ -67,9 +67,9 @@ async def update_router(
 async def delete_router(
     router_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_admin),
+    _current_user: Usuario = Depends(require_permission("routers", require_write=True)),
 ):
-    """Delete router (Admin only)"""
+    """Delete router (requires write permission on routers module)"""
     await routers_service.delete_router(db, router_id)
 
 
@@ -77,10 +77,10 @@ async def delete_router(
 async def test_router_connection(
     router_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_admin),
+    _current_user: Usuario = Depends(require_permission("routers")),
 ):
     """
-    Test connection to MikroTik router (Admin only)
+    Test connection to MikroTik router
 
     Attempts to connect to the router and retrieve system identity
     to verify credentials and connectivity.
@@ -103,9 +103,9 @@ async def test_router_connection(
 async def deactivate_router(
     router_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_admin),
+    _current_user: Usuario = Depends(require_permission("routers", require_write=True)),
 ):
-    """Deactivate router (Admin only)"""
+    """Deactivate router (requires write permission on routers module)"""
     return await routers_service.deactivate_router(db, router_id)
 
 
@@ -113,9 +113,9 @@ async def deactivate_router(
 async def activate_router(
     router_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_admin),
+    _current_user: Usuario = Depends(require_permission("routers", require_write=True)),
 ):
-    """Activate router (Admin only)"""
+    """Activate router (requires write permission on routers module)"""
     return await routers_service.activate_router(db, router_id)
 
 
@@ -123,9 +123,9 @@ async def activate_router(
 async def get_next_available_ip(
     router_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+    _current_user: Usuario = Depends(require_permission("routers")),
 ):
-    """Get next available IP address from router's CIDR ranges (Admin and Operador only)"""
+    """Get next available IP address from router's CIDR ranges"""
     ip_address = await routers_service.get_next_available_ip(db, router_id)
     return {"ip_address": ip_address}
 
@@ -136,7 +136,7 @@ async def check_ip_available(
     ip_address: str,
     exclude_contrato_id: uuid.UUID | None = Query(None),
     db: AsyncSession = Depends(get_db),
-    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+    _current_user: Usuario = Depends(require_permission("routers")),
 ):
     """Check if IP address is available for assignment (Admin and Operador only)"""
     return await routers_service.check_ip_available(db, router_id, ip_address, exclude_contrato_id)

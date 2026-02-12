@@ -27,6 +27,7 @@ import UsuariosListPage from "@/pages/usuarios/UsuariosListPage";
 import UsuarioCreatePage from "@/pages/usuarios/UsuarioCreatePage";
 import UsuarioEditPage from "@/pages/usuarios/UsuarioEditPage";
 import RolesManagementPage from "@/pages/roles/RolesManagementPage";
+import PersonalizacionPage from "@/pages/settings/PersonalizacionPage";
 
 export const router = createBrowserRouter([
   {
@@ -88,20 +89,24 @@ export const router = createBrowserRouter([
             element: <RoleProtectedRoute module="instalaciones"><InstalacionDetailPage /></RoleProtectedRoute>
           },
           {
-            path: "usuarios",
+            path: "settings/usuarios",
             element: <RoleProtectedRoute module="usuarios"><UsuariosListPage /></RoleProtectedRoute>
           },
           {
-            path: "usuarios/nuevo",
+            path: "settings/usuarios/nuevo",
             element: <RoleProtectedRoute module="usuarios"><UsuarioCreatePage /></RoleProtectedRoute>
           },
           {
-            path: "usuarios/:id",
+            path: "settings/usuarios/:id",
             element: <RoleProtectedRoute module="usuarios"><UsuarioEditPage /></RoleProtectedRoute>
           },
           {
-            path: "roles",
+            path: "settings/roles",
             element: <RoleProtectedRoute module="roles"><RolesManagementPage /></RoleProtectedRoute>
+          },
+          {
+            path: "settings/personalizacion",
+            element: <RoleProtectedRoute module="usuarios"><PersonalizacionPage /></RoleProtectedRoute>
           },
         ],
       },

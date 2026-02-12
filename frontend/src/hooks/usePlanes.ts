@@ -51,3 +51,21 @@ export function useDeactivatePlan() {
     },
   });
 }
+
+export function usePppProfiles(planId: string) {
+  return useQuery({
+    queryKey: ["planes", planId, "ppp-profiles"],
+    queryFn: () => planesApi.getPppProfiles(planId),
+    enabled: !!planId,
+  });
+}
+
+export function useSyncPppProfiles() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (planId: string) => planesApi.syncPppProfiles(planId),
+    onSuccess: (_, planId) => {
+      queryClient.invalidateQueries({ queryKey: ["planes", planId, "ppp-profiles"] });
+    },
+  });
+}

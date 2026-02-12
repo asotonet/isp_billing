@@ -62,3 +62,24 @@ async def deactivate_plan(
 ):
     """Deactivate plan (Admin and Operador only)"""
     return await planes_service.deactivate_plan(db, plan_id)
+
+
+@router.get("/{plan_id}/ppp-profiles")
+async def get_ppp_profiles(
+    plan_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(get_current_active_user),
+):
+    """Get PPP profiles information for this plan across all routers"""
+    return await planes_service.get_ppp_profiles_info(db, plan_id)
+
+
+@router.post("/{plan_id}/sync-ppp-profiles")
+async def sync_ppp_profiles(
+    plan_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    _current_user: Usuario = Depends(require_role(RolUsuario.ADMIN, RolUsuario.OPERADOR)),
+):
+    """Manually sync/update PPP profiles in all routers for this plan"""
+    await planes_service.sync_ppp_profiles_for_plan(db, plan_id)
+    return {"message": "Perfiles PPP sincronizados exitosamente"}

@@ -8,7 +8,9 @@ from app.api import (
     pagos,
     planes,
     role_permissions,
+    router_events,
     routers,
+    settings,
     usuarios,
 )
 
@@ -22,3 +24,5 @@ api_router.include_router(pagos.router)
 api_router.include_router(instalaciones.router)
 api_router.include_router(role_permissions.router)
 api_router.include_router(routers.router)
+api_router.include_router(router_events.router)
+api_router.include_router(settings.router)

@@ -2,7 +2,9 @@
 MikroTik RouterOS integration service using librouteros
 Manages address-lists for client access control
 """
+import ipaddress
 import logging
+import ssl
 from typing import Any
 
 import librouteros
@@ -47,12 +49,23 @@ class MikroTikService:
         """
         try:
             if self.ssl:
+                # Create SSL context for secure connection to MikroTik
+                # MikroTik RouterOS 6.43+ supports TLS 1.2+
+                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ssl_context.check_hostname = False
+                ssl_context.verify_mode = ssl.CERT_NONE
+                # Set TLS 1.2 as minimum (MikroTik requirement)
+                ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                # Allow all cipher suites at security level 0 for MikroTik compatibility
+                # MikroTik may use older cipher suites that require lower security level
+                ssl_context.set_ciphers('ALL:@SECLEVEL=0')
+
                 api = librouteros.connect(
                     host=self.host,
                     username=self.username,
                     password=self.password,
                     port=self.port,
-                    ssl_wrapper=librouteros.api_ssl.SSLWrapper,
+                    ssl_wrapper=ssl_context.wrap_socket,
                     timeout=10,
                 )
             else:
@@ -297,3 +310,325 @@ class MikroTikService:
         except Exception as e:
             logger.error(f"Failed to get address-list {list_name}: {str(e)}")
             return []
+
+    # ========== IP Pool Management ==========
+
+    async def create_or_update_ip_pool(
+        self,
+        pool_name: str,
+        cidr_ranges: list[str]
+    ) -> bool:
+        """
+        Create or update IP pool from CIDR ranges
+
+        Args:
+            pool_name: Name of the pool (e.g., "pool-router-nombre")
+            cidr_ranges: List of CIDR ranges (e.g., ["192.168.1.0/24", "10.0.0.0/24"])
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            api = await self._connect()
+            try:
+                ip_pool = api.path("/ip/pool")
+
+                # Check if pool exists
+                all_pools = list(ip_pool)
+                existing_pool = [p for p in all_pools if p.get("name") == pool_name]
+
+                # Convert CIDR ranges to IP ranges for MikroTik
+                # Example: 192.168.1.0/24 -> 192.168.1.2-192.168.1.254
+                ip_ranges = []
+                for cidr in cidr_ranges:
+                    try:
+                        network = ipaddress.ip_network(cidr, strict=False)
+                        # Skip network and broadcast addresses
+                        usable_ips = list(network.hosts())
+                        if usable_ips:
+                            first_ip = str(usable_ips[0])
+                            last_ip = str(usable_ips[-1])
+                            ip_ranges.append(f"{first_ip}-{last_ip}")
+                    except ValueError as e:
+                        logger.error(f"Invalid CIDR {cidr}: {str(e)}")
+                        continue
+
+                if not ip_ranges:
+                    logger.error(f"No valid IP ranges generated from CIDRs: {cidr_ranges}")
+                    return False
+
+                # Join ranges with comma
+                ranges_str = ",".join(ip_ranges)
+
+                if existing_pool:
+                    # Update existing pool
+                    pool_id = existing_pool[0][".id"]
+                    ip_pool.update(**{
+                        ".id": pool_id,
+                        "ranges": ranges_str
+                    })
+                    logger.info(f"Updated IP pool {pool_name} with ranges: {ranges_str}")
+                else:
+                    # Create new pool
+                    ip_pool.add(**{
+                        "name": pool_name,
+                        "ranges": ranges_str,
+                        "comment": "ISP Billing System - Auto-generated from CIDR"
+                    })
+                    logger.info(f"Created IP pool {pool_name} with ranges: {ranges_str}")
+
+                return True
+            finally:
+                api.close()
+        except Exception as e:
+            logger.error(f"Failed to create/update IP pool {pool_name}: {str(e)}")
+            return False
+
+    async def pool_exists(self, pool_name: str) -> bool:
+        """
+        Check if IP pool exists in MikroTik
+
+        Args:
+            pool_name: Name of the pool
+
+        Returns:
+            True if pool exists, False otherwise
+        """
+        try:
+            api = await self._connect()
+            try:
+                ip_pool = api.path("/ip/pool")
+                all_pools = list(ip_pool)
+                return any(p.get("name") == pool_name for p in all_pools)
+            finally:
+                api.close()
+        except Exception as e:
+            logger.error(f"Failed to check pool {pool_name}: {str(e)}")
+            return False
+
+    # ========== PPPoE Management ==========
+
+    async def create_or_update_ppp_profile(
+        self,
+        profile_name: str,
+        velocidad_bajada_mbps: float,
+        velocidad_subida_mbps: float,
+        local_address: str | None = None,
+        remote_address: str | None = None
+    ) -> bool:
+        """
+        Create or update PPP profile for a plan
+
+        Args:
+            profile_name: Name of the profile (e.g., "PLAN-50MB")
+            velocidad_bajada_mbps: Download speed in Mbps
+            velocidad_subida_mbps: Upload speed in Mbps
+            local_address: Local IP address (optional, MikroTik will use default if not specified)
+            remote_address: Remote IP address or pool name (optional, MikroTik will use default if not specified)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            api = await self._connect()
+            try:
+                ppp_profile = api.path("/ppp/profile")
+
+                # Check if profile exists
+                all_profiles = list(ppp_profile)
+                existing_profile = [p for p in all_profiles if p.get("name") == profile_name]
+
+                # Format rate limit: "upload/download" in bits per second
+                # MikroTik expects format like "10M/50M" for 10Mbps upload / 50Mbps download
+                # Convert to int to avoid decimals (10.00 -> 10)
+                upload_speed = int(velocidad_subida_mbps)
+                download_speed = int(velocidad_bajada_mbps)
+                rate_limit = f"{upload_speed}M/{download_speed}M"
+
+                if existing_profile:
+                    # Update existing profile
+                    profile_id = existing_profile[0][".id"]
+                    update_data = {
+                        ".id": profile_id,
+                        "rate-limit": rate_limit
+                    }
+
+                    # Update local/remote address if provided
+                    if local_address:
+                        update_data["local-address"] = local_address
+                    if remote_address:
+                        update_data["remote-address"] = remote_address
+
+                    ppp_profile.update(**update_data)
+                    logger.info(f"Updated PPP profile {profile_name} with rate-limit={rate_limit}, local-address={local_address}, remote-address={remote_address}")
+                else:
+                    # Create new profile - only include network parameters if provided
+                    profile_data = {
+                        "name": profile_name,
+                        "rate-limit": rate_limit,
+                        "comment": "ISP Billing System - Auto-generated"
+                    }
+
+                    # Only add local/remote address if specified to avoid pool errors
+                    if local_address:
+                        profile_data["local-address"] = local_address
+                    if remote_address:
+                        profile_data["remote-address"] = remote_address
+
+                    ppp_profile.add(**profile_data)
+                    logger.info(f"Created PPP profile {profile_name} with rate-limit {rate_limit}")
+
+                return True
+            finally:
+                api.close()
+        except Exception as e:
+            logger.error(f"Failed to create/update PPP profile {profile_name}: {str(e)}")
+            return False
+
+    async def add_ppp_secret(
+        self,
+        username: str,
+        password: str,
+        profile_name: str,
+        disabled: bool = False,
+        comment: str | None = None,
+        remote_address: str | None = None
+    ) -> bool:
+        """
+        Create or update PPP secret (PPPoE user)
+
+        Args:
+            username: PPPoE username
+            password: PPPoE password
+            profile_name: PPP profile to use
+            disabled: Whether the user should be disabled
+            comment: Optional comment
+            remote_address: Fixed IP address for this specific user (optional)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            api = await self._connect()
+            try:
+                ppp_secret = api.path("/ppp/secret")
+
+                # Check if secret exists
+                all_secrets = list(ppp_secret)
+                existing_secret = [s for s in all_secrets if s.get("name") == username]
+
+                if existing_secret:
+                    # Update existing secret
+                    secret_id = existing_secret[0][".id"]
+                    update_data = {
+                        ".id": secret_id,
+                        "password": password,
+                        "profile": profile_name,
+                        "service": "pppoe",
+                        "disabled": "yes" if disabled else "no"
+                    }
+                    if comment:
+                        update_data["comment"] = comment
+                    if remote_address:
+                        update_data["remote-address"] = remote_address
+
+                    ppp_secret.update(**update_data)
+                    logger.info(f"Updated PPP secret for user {username} (disabled={disabled}, remote-address={remote_address})")
+                else:
+                    # Create new secret
+                    add_data = {
+                        "name": username,
+                        "password": password,
+                        "profile": profile_name,
+                        "service": "pppoe",
+                        "disabled": "yes" if disabled else "no",
+                        "comment": comment or "ISP Billing System"
+                    }
+                    if remote_address:
+                        add_data["remote-address"] = remote_address
+
+                    ppp_secret.add(**add_data)
+                    logger.info(f"Created PPP secret for user {username} with profile {profile_name} (remote-address={remote_address})")
+
+                return True
+            finally:
+                api.close()
+        except Exception as e:
+            logger.error(f"Failed to add/update PPP secret for {username}: {str(e)}")
+            return False
+
+    async def remove_ppp_secret(self, username: str) -> bool:
+        """
+        Remove PPP secret (PPPoE user)
+
+        Args:
+            username: PPPoE username to remove
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            api = await self._connect()
+            try:
+                ppp_secret = api.path("/ppp/secret")
+
+                # Find secret
+                all_secrets = list(ppp_secret)
+                matching_secrets = [s for s in all_secrets if s.get("name") == username]
+
+                if not matching_secrets:
+                    logger.info(f"No PPP secret found for user {username}")
+                    return True
+
+                # Remove all matching secrets (should only be one)
+                for secret in matching_secrets:
+                    secret_id = secret.get(".id")
+                    ppp_secret.remove(secret_id)
+                    logger.info(f"Removed PPP secret for user {username}")
+
+                return True
+            finally:
+                api.close()
+        except Exception as e:
+            logger.error(f"Failed to remove PPP secret for {username}: {str(e)}")
+            return False
+
+    async def update_ppp_secret_status(self, username: str, disabled: bool) -> bool:
+        """
+        Enable or disable PPP secret (for suspension/activation)
+
+        Args:
+            username: PPPoE username
+            disabled: True to disable (suspend), False to enable (activate)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            api = await self._connect()
+            try:
+                ppp_secret = api.path("/ppp/secret")
+
+                # Find secret
+                all_secrets = list(ppp_secret)
+                matching_secrets = [s for s in all_secrets if s.get("name") == username]
+
+                if not matching_secrets:
+                    logger.warning(f"No PPP secret found for user {username}")
+                    return False
+
+                # Update status
+                secret_id = matching_secrets[0][".id"]
+                ppp_secret.update(**{
+                    ".id": secret_id,
+                    "disabled": "yes" if disabled else "no"
+                })
+                status = "disabled" if disabled else "enabled"
+                logger.info(f"PPP secret for user {username} {status}")
+
+                return True
+            finally:
+                api.close()
+        except Exception as e:
+            logger.error(f"Failed to update PPP secret status for {username}: {str(e)}")
+            return False

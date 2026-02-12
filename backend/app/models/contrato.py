@@ -15,6 +15,11 @@ class EstadoContrato(str, enum.Enum):
     PENDIENTE = "pendiente"
 
 
+class TipoConexion(str, enum.Enum):
+    IPOE = "ipoe"
+    PPPOE = "pppoe"
+
+
 class Contrato(BaseModel):
     __tablename__ = "contratos"
 
@@ -37,10 +42,18 @@ class Contrato(BaseModel):
     pdf_firmado_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     # MikroTik integration fields
+    tipo_conexion: Mapped[TipoConexion] = mapped_column(
+        Enum(TipoConexion), default=TipoConexion.IPOE, nullable=False
+    )
     ip_asignada: Mapped[str | None] = mapped_column(String(50), nullable=True)
     router_id: Mapped[str | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("routers.id", ondelete="SET NULL"), nullable=True
     )
+
+    # PPPoE fields (only used when tipo_conexion=PPPOE)
+    pppoe_usuario: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    pppoe_password: Mapped[str | None] = mapped_column(Text, nullable=True)  # Encrypted
+    pppoe_remote_address: Mapped[str | None] = mapped_column(String(50), nullable=True)  # Fixed IP or null for pool
 
     cliente: Mapped["Cliente"] = relationship(back_populates="contratos")  # noqa: F821
     plan: Mapped["Plan"] = relationship(back_populates="contratos")  # noqa: F821

@@ -3,6 +3,9 @@ import { z } from "zod";
 // IPv4 regex pattern
 const ipv4Pattern = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 
+// CIDR validation: accepts single CIDR or comma-separated list
+const cidrPattern = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2})(,\s*\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2})*$/;
+
 export const routerSchema = z.object({
   nombre: z.string().min(1, "Nombre es requerido").max(100),
   ip: z
@@ -14,7 +17,10 @@ export const routerSchema = z.object({
   puerto: z.coerce.number().int().min(1).max(65535).default(8728),
   ssl: z.boolean().default(false),
   is_active: z.boolean().default(true),
-  cidr_disponibles: z.string().optional().or(z.literal("")),
+  cidr_disponibles: z
+    .string()
+    .min(1, "CIDR es requerido")
+    .regex(cidrPattern, "Formato CIDR inválido (ej: 192.168.1.0/24 o 192.168.1.0/24,10.0.0.0/24)"),
 });
 
 export const routerUpdateSchema = z.object({

@@ -12,6 +12,8 @@ from app.models.contrato import Contrato
 from app.schemas.common import PaginatedResponse
 from app.schemas.router import RouterCreate, RouterUpdate
 from app.utils.pagination import paginate
+from app.services.router_monitor import check_router_connectivity
+from app.services.router_events import create_router_event
 
 
 async def list_routers(
@@ -61,10 +63,28 @@ async def create_router(db: AsyncSession, data: RouterCreate) -> Router:
     if existing_router:
         raise ConflictError("Ya existe un router con esa dirección IP")
 
+    # Test actual MikroTik API connection with credentials before saving
+    from app.services.mikrotik import MikroTikService
+    mikrotik = MikroTikService(
+        host=data.ip,
+        username=data.usuario,
+        password=data.password,
+        port=data.puerto,
+        ssl=data.ssl,
+    )
+
+    connection_result = await mikrotik.test_connection()
+    if not connection_result.success:
+        raise BadRequestError(
+            f"No se pudo conectar al router MikroTik: {connection_result.message}. "
+            "Verifica las credenciales, IP, puerto y configuración SSL."
+        )
+
     # Encrypt password
     encrypted_password = encryption_service.encrypt(data.password)
 
-    # Create router
+    # Create router with initial online status and identity/version from test
+    from datetime import datetime
     router = Router(
         nombre=data.nombre,
         ip=data.ip,
@@ -74,10 +94,23 @@ async def create_router(db: AsyncSession, data: RouterCreate) -> Router:
         ssl=data.ssl,
         is_active=data.is_active,
         cidr_disponibles=data.cidr_disponibles,
+        is_online=True,  # Set as online since we just verified connectivity
+        identity=connection_result.message.replace("Conexión exitosa a ", "").strip() if connection_result.message else None,
+        routeros_version=connection_result.router_version,
+        last_check_at=datetime.utcnow(),
+        last_online_at=datetime.utcnow(),
     )
     db.add(router)
     await db.flush()
     await db.refresh(router)
+
+    # Register creation event
+    await create_router_event(
+        db, router.id, "CREATED",
+        f"Router {data.nombre} creado",
+        {"ip": data.ip, "puerto": data.puerto, "identity": router.identity, "version": router.routeros_version}
+    )
+
     return router
 
 
@@ -113,6 +146,14 @@ async def update_router(
 async def delete_router(db: AsyncSession, router_id: uuid.UUID) -> None:
     """Delete router (hard delete)"""
     router = await get_router(db, router_id)
+
+    # Register deletion event before deleting
+    await create_router_event(
+        db, router_id, "DELETED",
+        f"Router {router.nombre} eliminado",
+        {"ip": router.ip}
+    )
+
     await db.delete(router)
     await db.flush()
 
@@ -260,3 +301,50 @@ async def check_ip_available(
         "message": "IP disponible",
         "contrato_numero": None
     }
+
+
+def get_local_address_from_cidrs(cidr_disponibles: str) -> str | None:
+    """
+    Get the first IP from the smallest CIDR range to use as local address (PPPoE gateway)
+
+    Args:
+        cidr_disponibles: Comma-separated CIDR ranges (e.g., "192.168.1.0/24,10.0.0.0/24")
+
+    Returns:
+        First usable IP from the smallest CIDR, or None if no valid CIDRs
+
+    Example:
+        "192.168.1.0/24,10.0.0.0/24" -> "10.0.0.1"
+        "172.16.0.0/16" -> "172.16.0.1"
+    """
+    if not cidr_disponibles or not cidr_disponibles.strip():
+        return None
+
+    cidr_ranges = [cidr.strip() for cidr in cidr_disponibles.split(",") if cidr.strip()]
+
+    if not cidr_ranges:
+        return None
+
+    # Parse all CIDRs and get their first IPs
+    networks = []
+    for cidr in cidr_ranges:
+        try:
+            network = ipaddress.ip_network(cidr, strict=False)
+            networks.append(network)
+        except ValueError:
+            continue
+
+    if not networks:
+        return None
+
+    # Sort by first IP address (numerically)
+    networks.sort(key=lambda net: int(net.network_address))
+
+    # Get first usable IP from the smallest CIDR
+    smallest_network = networks[0]
+    usable_ips = list(smallest_network.hosts())
+
+    if usable_ips:
+        return str(usable_ips[0])
+
+    return None

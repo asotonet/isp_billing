@@ -32,9 +32,7 @@ export default function ContratoEditPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Editar Contrato</h1>
-      <p className="text-muted-foreground">{contrato.numero_contrato}</p>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Contrato</CardTitle>
@@ -48,8 +46,12 @@ export default function ContratoEditPage() {
               estado: contrato.estado,
               dia_facturacion: contrato.dia_facturacion,
               notas: contrato.notas || undefined,
+              tipo_conexion: contrato.tipo_conexion,
               ip_asignada: contrato.ip_asignada || undefined,
               router_id: contrato.router_id || undefined,
+              pppoe_usuario: contrato.pppoe_usuario || undefined,
+              pppoe_password: contrato.pppoe_password || undefined,
+              pppoe_remote_address: contrato.pppoe_remote_address || undefined,
             }}
             onSubmit={handleSubmit}
             isLoading={updateMutation.isPending}

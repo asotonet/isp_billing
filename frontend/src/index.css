@@ -423,29 +423,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-.text-gradient-animated {
-  background: linear-gradient(
-    90deg,
-    #00e5ff,
-    #39ff85,
-    #a78bfa,
-    #00e5ff
-  );
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-flow 4s ease infinite;
-}
-
-@keyframes gradient-flow {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
+/* Removed .text-gradient-animated - replaced with solid colors for cleaner look */
 
 /* ============================================ */
 /* CARDS with subtle borders */

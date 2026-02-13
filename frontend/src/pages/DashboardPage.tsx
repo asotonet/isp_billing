@@ -28,7 +28,7 @@ const estadoPagoBadge = (estado: string) => {
 
 const pagoColumns: Column<Pago>[] = [
   { header: "Fecha", accessor: (row) => formatDate(row.fecha_pago) },
-  { header: "Monto", accessor: (row) => <span className="font-semibold text-gradient-animated">{formatCRC(row.monto)}</span> },
+  { header: "Monto", accessor: (row) => <span className="font-semibold text-primary mono">{formatCRC(row.monto)}</span> },
   { header: "Método", accessor: "metodo_pago" },
   { header: "Periodo", accessor: "periodo_facturado" },
   { header: "Estado", accessor: (row) => estadoPagoBadge(row.estado) },

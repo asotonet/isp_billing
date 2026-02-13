@@ -80,7 +80,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                   <ChevronRight className="h-4 w-4 mx-1 text-primary/50" />
                 )}
                 {crumb.isLast ? (
-                  <span className="text-xl font-bold text-gradient-animated">
+                  <span className="text-xl font-bold text-primary">
                     {crumb.label}
                   </span>
                 ) : (

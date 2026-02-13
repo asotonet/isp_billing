@@ -3,28 +3,80 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Deep navy palette inspired by asotonet.github.io */
-  --background: 220 40% 6%;           /* #0a0e17 - deep navy */
-  --background-secondary: 220 35% 8%; /* #0f1520 - slightly lighter */
-  --foreground: 218 40% 93%;          /* #e8edf5 - light text */
+  /* Light mode - clean and modern */
+  --background: 0 0% 100%;            /* white */
+  --background-secondary: 220 20% 97%; /* light gray */
+  --foreground: 220 40% 10%;          /* dark text */
 
-  --card: 220 40% 11%;                /* #131a2b - card background */
+  --card: 0 0% 100%;                  /* white cards */
+  --card-foreground: 220 40% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 40% 10%;
+
+  /* Cyan primary */
+  --primary: 187 100% 42%;            /* #00b8d4 - slightly darker cyan for light mode */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 220 15% 93%;
+  --secondary-foreground: 220 40% 10%;
+  --muted: 220 15% 95%;
+  --muted-foreground: 220 15% 40%;
+  --accent: 187 100% 42%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 145 80% 42%;             /* darker green for light mode */
+  --success-foreground: 0 0% 100%;
+
+  --warning: 25 95% 53%;              /* adjusted orange */
+  --warning-foreground: 0 0% 100%;
+
+  --border: 220 13% 91%;              /* light borders */
+  --input: 220 13% 91%;
+  --ring: 187 100% 42%;
+  --radius: 0.75rem;
+
+  /* Sidebar light mode */
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 220 40% 10%;
+  --sidebar-primary: 187 100% 42%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 220 15% 95%;
+  --sidebar-accent-foreground: 220 40% 10%;
+  --sidebar-border: 220 13% 91%;
+
+  /* Charts - vibrant accent colors */
+  --chart-1: 187 100% 42%;            /* cyan */
+  --chart-2: 145 80% 42%;             /* green */
+  --chart-3: 265 83% 65%;             /* purple */
+  --chart-4: 25 95% 53%;              /* orange */
+  --chart-5: 337 100% 58%;            /* pink */
+}
+
+.dark {
+  /* Dark mode - deep navy theme */
+  --background: 220 40% 6%;           /* #0a0e17 - deep navy */
+  --background-secondary: 220 35% 8%;
+  --foreground: 218 40% 93%;          /* light text */
+
+  --card: 220 40% 11%;                /* dark card background */
   --card-foreground: 218 40% 93%;
   --popover: 220 40% 11%;
   --popover-foreground: 218 40% 93%;
 
-  /* Cyan primary (like the reference site) */
   --primary: 187 100% 50%;            /* #00e5ff - bright cyan */
   --primary-foreground: 220 40% 6%;
 
   --secondary: 220 25% 15%;
   --secondary-foreground: 218 40% 93%;
   --muted: 220 25% 15%;
-  --muted-foreground: 215 15% 60%;    /* #8892a8 - dimmed text */
-  --accent: 187 100% 50%;             /* cyan */
+  --muted-foreground: 215 15% 60%;
+  --accent: 187 100% 50%;
   --accent-foreground: 220 40% 6%;
 
-  --destructive: 0 84% 60%;
+  --destructive: 0 63% 31%;
   --destructive-foreground: 218 40% 93%;
 
   --success: 145 100% 61%;            /* #39ff85 - terminal green */
@@ -35,10 +87,9 @@
 
   --border: 220 25% 20%;              /* subtle borders */
   --input: 220 25% 20%;
-  --ring: 187 100% 50%;               /* cyan ring */
-  --radius: 0.75rem;
+  --ring: 187 100% 50%;
 
-  /* Sidebar with glassmorphism */
+  /* Sidebar dark mode */
   --sidebar-background: 220 40% 6%;
   --sidebar-foreground: 218 40% 93%;
   --sidebar-primary: 187 100% 50%;
@@ -47,52 +98,12 @@
   --sidebar-accent-foreground: 218 40% 93%;
   --sidebar-border: 220 25% 20%;
 
-  /* Charts - vibrant accent colors */
+  /* Charts in dark mode */
   --chart-1: 187 100% 50%;            /* cyan */
   --chart-2: 145 100% 61%;            /* green */
-  --chart-3: 265 83% 75%;             /* purple #a78bfa */
+  --chart-3: 265 83% 75%;             /* purple */
   --chart-4: 25 100% 66%;             /* orange */
-  --chart-5: 337 100% 68%;            /* pink #ff5ea0 */
-}
-
-.dark {
-  /* Same palette - we're always dark now */
-  --background: 220 40% 6%;
-  --background-secondary: 220 35% 8%;
-  --foreground: 218 40% 93%;
-  --card: 220 40% 11%;
-  --card-foreground: 218 40% 93%;
-  --popover: 220 40% 11%;
-  --popover-foreground: 218 40% 93%;
-  --primary: 187 100% 50%;
-  --primary-foreground: 220 40% 6%;
-  --secondary: 220 25% 15%;
-  --secondary-foreground: 218 40% 93%;
-  --muted: 220 25% 15%;
-  --muted-foreground: 215 15% 60%;
-  --accent: 187 100% 50%;
-  --accent-foreground: 220 40% 6%;
-  --destructive: 0 63% 31%;
-  --destructive-foreground: 218 40% 93%;
-  --success: 145 100% 61%;
-  --success-foreground: 220 40% 6%;
-  --warning: 25 100% 66%;
-  --warning-foreground: 220 40% 6%;
-  --border: 220 25% 20%;
-  --input: 220 25% 20%;
-  --ring: 187 100% 50%;
-  --sidebar-background: 220 40% 6%;
-  --sidebar-foreground: 218 40% 93%;
-  --sidebar-primary: 187 100% 50%;
-  --sidebar-primary-foreground: 220 40% 6%;
-  --sidebar-accent: 220 35% 12%;
-  --sidebar-accent-foreground: 218 40% 93%;
-  --sidebar-border: 220 25% 20%;
-  --chart-1: 187 100% 50%;
-  --chart-2: 145 100% 61%;
-  --chart-3: 265 83% 75%;
-  --chart-4: 25 100% 66%;
-  --chart-5: 337 100% 68%;
+  --chart-5: 337 100% 68%;            /* pink */
 }
 
 @theme inline {

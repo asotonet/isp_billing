@@ -140,41 +140,51 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
     }
   };
 
+  // Auto open when typing
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      setOpen(true);
+    }
+  }, [searchQuery, setOpen]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button className="hidden md:flex items-center gap-2 px-2 md:px-3 py-1.5 md:py-2 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/40 transition-all duration-300 group">
-          <Search className="h-3.5 w-3.5 md:h-4 md:w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-          <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">Buscar...</span>
-          <kbd className="hidden xl:inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-            <span className="text-xs">⌘</span>K
-          </kbd>
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[500px] p-0 border-border"
-        align="start"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <div className="flex items-center border-b border-border px-3">
+      <div className="relative hidden md:block w-full max-w-md">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background focus-within:border-primary/40 transition-all">
           <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <Input
-            ref={inputRef}
-            placeholder="Buscar clientes, contratos, planes..."
-            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+          <PopoverTrigger asChild>
+            <Input
+              ref={inputRef}
+              placeholder="Buscar clientes, contratos, planes..."
+              className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-auto p-0"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => searchQuery.length > 0 && setOpen(true)}
+            />
+          </PopoverTrigger>
           {searchQuery && (
             <button
-              onClick={() => setSearchQuery("")}
-              className="p-1 hover:bg-accent rounded"
+              onClick={() => {
+                setSearchQuery("");
+                setOpen(false);
+              }}
+              className="p-1 hover:bg-accent rounded shrink-0"
             >
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
           )}
+          <kbd className="hidden xl:flex h-5 select-none items-center gap-1 rounded border border-border bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground shrink-0">
+            <span className="text-xs">⌘</span>K
+          </kbd>
         </div>
+      </div>
+      <PopoverContent
+        className="w-[500px] p-0 border-border"
+        align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        sideOffset={8}
+      >
 
         {searchQuery.length > 0 && searchQuery.length < 3 && (
           <div className="p-4 text-center text-sm text-muted-foreground">

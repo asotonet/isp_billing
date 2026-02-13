@@ -107,29 +107,15 @@ export default function Header({ onMenuClick }: HeaderProps) {
               </div>
             ))}
           </nav>
+
+          {/* Global Search */}
+          <div className="flex-1 max-w-md ml-auto hidden lg:block">
+            <GlobalSearch open={commandOpen} onOpenChange={setCommandOpen} />
+          </div>
         </div>
 
         {/* Right section */}
         <div className="flex items-center gap-1 md:gap-2 relative z-10">
-          {/* Global Search */}
-          <GlobalSearch open={commandOpen} onOpenChange={setCommandOpen} />
-
-          {/* Mobile search button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden hover-glow"
-                onClick={() => setCommandOpen(true)}
-              >
-                <CommandIcon className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              Buscar (Cmd+K)
-            </TooltipContent>
-          </Tooltip>
 
           <NotificationsDropdown />
 

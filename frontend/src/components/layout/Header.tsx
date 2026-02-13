@@ -46,7 +46,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-6 relative">
+      <header className="sticky top-0 z-30 flex h-14 md:h-16 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3 md:px-4 lg:px-6 relative">
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-chart-3/5 pointer-events-none" />
 
@@ -69,7 +69,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           </Tooltip>
 
           {/* Breadcrumbs with animations */}
-          <nav className="hidden md:flex items-center space-x-1 text-muted-foreground">
+          <nav className="hidden lg:flex items-center space-x-1 text-muted-foreground">
             {breadcrumbs.map((crumb, index) => (
               <div
                 key={crumb.href}
@@ -77,16 +77,16 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {index > 0 && (
-                  <ChevronRight className="h-4 w-4 mx-1 text-primary/50" />
+                  <ChevronRight className="h-3 w-3 md:h-4 md:w-4 mx-1 text-primary/50" />
                 )}
                 {crumb.isLast ? (
-                  <span className="text-base font-semibold text-primary">
+                  <span className="text-sm md:text-base font-semibold text-primary">
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     to={crumb.href}
-                    className="text-sm hover:text-foreground transition-all duration-300 hover:translate-x-0.5 relative group"
+                    className="text-xs md:text-sm hover:text-foreground transition-all duration-300 hover:translate-x-0.5 relative group"
                   >
                     {crumb.label}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-chart-3 group-hover:w-full transition-all duration-300" />
@@ -98,17 +98,17 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </div>
 
         {/* Right section */}
-        <div className="flex items-center gap-2 relative z-10">
+        <div className="flex items-center gap-1 md:gap-2 relative z-10">
           {/* Command Palette Trigger */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 onClick={() => setCommandOpen(true)}
-                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-background/50 hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 hover:shadow-md group"
+                className="hidden md:flex items-center gap-2 px-2 md:px-3 py-1.5 md:py-2 rounded-lg border border-primary/20 bg-background/50 hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 hover:shadow-md group"
               >
-                <Search className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="text-sm text-muted-foreground">Buscar...</span>
-                <kbd className="hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border border-primary/20 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-hover:border-primary/40">
+                <Search className="h-3.5 w-3.5 md:h-4 md:w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">Buscar...</span>
+                <kbd className="hidden xl:inline-flex h-5 select-none items-center gap-1 rounded border border-primary/20 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-hover:border-primary/40">
                   <span className="text-xs">⌘</span>K
                 </kbd>
               </button>

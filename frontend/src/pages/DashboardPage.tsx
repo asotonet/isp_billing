@@ -155,20 +155,20 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 md:space-y-6 animate-fade-up px-2 md:px-0">
       {/* Animated Header */}
       <div className="animate-fade-up" style={{ animationDelay: "0.1s" }}>
-        <h1 className="flex items-center gap-3">
-          <Zap className="h-6 w-6 text-primary animate-pulse" />
+        <h1 className="flex items-center gap-2 md:gap-3 text-xl md:text-2xl">
+          <Zap className="h-5 w-5 md:h-6 md:w-6 text-primary animate-pulse" />
           Dashboard
         </h1>
-        <p className="text-muted-foreground text-sm mt-1">
+        <p className="text-muted-foreground text-xs md:text-sm mt-1">
           Gestión en tiempo real de tu ISP
         </p>
       </div>
 
       {/* Stats Cards with Enhanced Animations */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 md:gap-4 lg:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <Link key={stat.label} to={stat.href}>
             <Card
@@ -187,24 +187,24 @@ export default function DashboardPage() {
 
               {/* Content */}
               <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
+                <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
                   {stat.label}
                 </CardTitle>
                 <div
-                  className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg transition-all duration-500`}
+                  className={`h-10 w-10 md:h-12 md:w-12 rounded-lg md:rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg transition-all duration-500`}
                   style={{
                     boxShadow: stat.glowColor,
                   }}
                 >
-                  <stat.icon className="h-6 w-6 text-white transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6" />
+                  <stat.icon className="h-5 w-5 md:h-6 md:w-6 text-white transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6" />
                 </div>
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex items-baseline justify-between">
-                  <div className="stat-number text-4xl font-bold transition-colors duration-300">
+                  <div className="stat-number text-2xl md:text-3xl lg:text-4xl font-bold transition-colors duration-300">
                     {stat.value}
                   </div>
-                  <ArrowUpRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 </div>
                 <div className="mt-3 h-0.5 w-0 group-hover:w-full transition-all duration-700 rounded-full bg-gradient-to-r"
                      style={{ backgroundImage: `linear-gradient(90deg, ${stat.gradient})` }}
@@ -225,19 +225,20 @@ export default function DashboardPage() {
         {/* Scan lines overlay */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 
-        <CardHeader className="flex flex-row items-center justify-between relative z-10">
+        <CardHeader className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between relative z-10">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCard className="h-5 w-5 text-primary" />
-              <span className="text-foreground">Pagos Pendientes Recientes</span>
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <CreditCard className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+              <span className="text-foreground">Pagos Pendientes</span>
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
-              Últimas transacciones pendientes de validación
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+              Últimas transacciones pendientes
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild className="border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300">
+          <Button variant="outline" size="sm" asChild className="border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 self-start sm:self-auto">
             <Link to="/pagos">
-              Ver todos
+              <span className="hidden sm:inline">Ver todos</span>
+              <span className="sm:hidden">Ver</span>
               <ArrowUpRight className="h-4 w-4 ml-1" />
             </Link>
           </Button>
@@ -258,19 +259,20 @@ export default function DashboardPage() {
         {/* Scan lines overlay */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 
-        <CardHeader className="flex flex-row items-center justify-between relative z-10">
+        <CardHeader className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between relative z-10">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-primary" />
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <Activity className="h-4 w-4 md:h-5 md:w-5 text-primary" />
               <span className="text-foreground">Eventos de Routers</span>
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
-              Monitoreo en tiempo real de cambios y estado de routers
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+              Monitoreo en tiempo real
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild className="border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300">
+          <Button variant="outline" size="sm" asChild className="border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 self-start sm:self-auto">
             <Link to="/routers">
-              Ver routers
+              <span className="hidden sm:inline">Ver routers</span>
+              <span className="sm:hidden">Ver</span>
               <ArrowUpRight className="h-4 w-4 ml-1" />
             </Link>
           </Button>

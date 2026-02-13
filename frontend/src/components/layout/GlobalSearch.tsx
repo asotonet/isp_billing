@@ -148,43 +148,44 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
   }, [searchQuery, setOpen]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <div className="relative hidden md:block w-full max-w-md">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background focus-within:border-primary/40 transition-all">
-          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <PopoverTrigger asChild>
-            <Input
+    <div className="relative hidden md:block w-full">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background focus-within:border-primary/40 transition-all cursor-text">
+            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <input
               ref={inputRef}
+              type="text"
               placeholder="Buscar clientes, contratos, planes..."
-              className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-auto p-0"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               onFocus={() => searchQuery.length > 0 && setOpen(true)}
             />
-          </PopoverTrigger>
-          {searchQuery && (
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setOpen(false);
-              }}
-              className="p-1 hover:bg-accent rounded shrink-0"
-            >
-              <X className="h-4 w-4 text-muted-foreground" />
-            </button>
-          )}
-          <kbd className="hidden xl:flex h-5 select-none items-center gap-1 rounded border border-border bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground shrink-0">
-            <span className="text-xs">⌘</span>K
-          </kbd>
-        </div>
-      </div>
-      <PopoverContent
-        className="w-[500px] p-0 border-border"
-        align="start"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        sideOffset={8}
-      >
+            {searchQuery && (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setOpen(false);
+                }}
+                className="p-1 hover:bg-accent rounded shrink-0"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
+            <kbd className="hidden xl:flex h-5 select-none items-center gap-1 rounded border border-border bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground shrink-0">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[500px] p-0 border-border"
+          align="start"
+          side="bottom"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          sideOffset={8}
+        >
 
         {searchQuery.length > 0 && searchQuery.length < 3 && (
           <div className="p-4 text-center text-sm text-muted-foreground">
@@ -227,7 +228,8 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
             </div>
           </div>
         )}
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }

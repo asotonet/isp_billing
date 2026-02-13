@@ -179,7 +179,7 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[500px] p-0 border-border shadow-lg"
+          className="w-[500px] p-0 border-border shadow-lg outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
           align="start"
           side="bottom"
           onOpenAutoFocus={(e) => e.preventDefault()}

@@ -159,11 +159,11 @@ export default function DashboardPage() {
       {/* Animated Header */}
       <div className="flex items-center justify-between animate-fade-up" style={{ animationDelay: "0.1s" }}>
         <div>
-          <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
-            <Zap className="h-8 w-8 text-primary animate-pulse" />
+          <h1 className="flex items-center gap-3">
+            <Zap className="h-6 w-6 text-primary animate-pulse" />
             Dashboard
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm mt-1">
             Gestión en tiempo real de tu ISP
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
 
               {/* Content */}
               <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
+                <CardTitle className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
                   {stat.label}
                 </CardTitle>
                 <div
@@ -207,10 +207,10 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex items-baseline justify-between">
-                  <div className="stat-number text-5xl font-bold transition-colors duration-300">
+                  <div className="stat-number text-3xl font-bold transition-colors duration-300">
                     {stat.value}
                   </div>
-                  <ArrowUpRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <ArrowUpRight className="h-4 w-4 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 </div>
                 <div className="mt-3 h-0.5 w-0 group-hover:w-full transition-all duration-700 rounded-full bg-gradient-to-r"
                      style={{ backgroundImage: `linear-gradient(90deg, ${stat.gradient})` }}
@@ -233,8 +233,8 @@ export default function DashboardPage() {
 
         <CardHeader className="flex flex-row items-center justify-between relative z-10">
           <div>
-            <CardTitle className="text-2xl flex items-center gap-3">
-              <CreditCard className="h-6 w-6 text-primary" />
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
               <span className="text-foreground">Pagos Pendientes Recientes</span>
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
@@ -266,8 +266,8 @@ export default function DashboardPage() {
 
         <CardHeader className="flex flex-row items-center justify-between relative z-10">
           <div>
-            <CardTitle className="text-2xl flex items-center gap-3">
-              <Activity className="h-6 w-6 text-primary" />
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" />
               <span className="text-foreground">Eventos de Routers</span>
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">

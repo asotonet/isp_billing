@@ -160,6 +160,8 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     position: relative;
     min-height: 100vh;
+    font-size: 0.9375rem;
+    line-height: 1.6;
     letter-spacing: -0.011em;
   }
 
@@ -200,26 +202,45 @@
   }
 
   /* Typography - IBM Plex Sans for professional look */
+  /* Proportional type scale (1.25 ratio - Major Third) */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 600;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
   }
 
   h1 {
-    @apply text-4xl font-bold tracking-tight lg:text-5xl;
+    font-size: 2rem;        /* 32px */
+    font-weight: 700;
   }
   h2 {
-    @apply text-3xl font-semibold tracking-tight;
+    font-size: 1.625rem;    /* 26px */
   }
   h3 {
-    @apply text-2xl font-semibold tracking-tight;
+    font-size: 1.3125rem;   /* 21px */
   }
   h4 {
-    @apply text-xl font-semibold tracking-tight;
+    font-size: 1.125rem;    /* 18px */
   }
+  h5 {
+    font-size: 1rem;        /* 16px */
+    font-weight: 600;
+  }
+  h6 {
+    font-size: 0.9375rem;   /* 15px */
+    font-weight: 600;
+  }
+
   p {
-    @apply leading-7;
+    line-height: 1.6;
+    margin-bottom: 1em;
+  }
+
+  small, .text-small {
+    font-size: 0.8125rem;   /* 13px */
+    line-height: 1.5;
   }
 
   code, kbd, pre, .mono {

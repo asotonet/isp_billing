@@ -81,12 +81,7 @@ export default function DataTable<T extends { id?: string }>({
                   col.className
                 )}
               >
-                <div className="flex items-center gap-2">
-                  {col.header}
-                  {i === 0 && (
-                    <Sparkles className="h-3 w-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
-                  )}
-                </div>
+                {col.header}
                 {/* Animated underline */}
                 <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-gradient-to-r from-primary to-chart-3" />
               </TableHead>

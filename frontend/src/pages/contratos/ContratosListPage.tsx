@@ -45,6 +45,22 @@ export default function ContratosListPage() {
     },
     { header: "Plan", accessor: (row) => row.plan?.nombre ?? "-" },
     { header: "Precio", accessor: (row) => formatCRC(row.plan?.precio_mensual ?? 0) },
+    {
+      header: "Conexión",
+      accessor: (row) => (
+        <div className="space-y-1">
+          <Badge variant="outline" className="font-mono text-xs">
+            {row.tipo_conexion?.toUpperCase() || "IPoE"}
+          </Badge>
+          <div className="text-xs text-muted-foreground">
+            {row.tipo_conexion === "pppoe"
+              ? row.pppoe_usuario || "-"
+              : row.ip_asignada || "-"
+            }
+          </div>
+        </div>
+      ),
+    },
     { header: "Inicio", accessor: (row) => formatDate(row.fecha_inicio) },
     {
       header: "Estado",
@@ -65,17 +81,16 @@ export default function ContratosListPage() {
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Contratos</h1>
-        {canWrite("contratos") && (
+    <div className="space-y-6">
+      {canWrite("contratos") && (
+        <div className="flex items-center justify-end">
           <Button asChild>
             <Link to="/contratos/nuevo">
               <Plus className="h-4 w-4" /> Nuevo Contrato
             </Link>
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="flex gap-4">
         <Select value={estado} onValueChange={setEstado}>

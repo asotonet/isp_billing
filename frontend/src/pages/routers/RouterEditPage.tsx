@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RouterForm from "@/components/routers/RouterForm";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useRouter, useUpdateRouter } from "@/hooks/useRouters";
-import type { RouterFormData } from "@/schemas/router";
+import type { RouterFormData, RouterUpdateFormData } from "@/schemas/router";
 
 export default function RouterEditPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +17,7 @@ export default function RouterEditPage() {
 
   const handleSubmit = (data: RouterFormData) => {
     // Si password está vacío en edición, no enviarlo
-    const submitData = { ...data };
+    const submitData: RouterUpdateFormData = { ...data };
     if (submitData.password === "") {
       delete submitData.password;
     }
@@ -46,8 +46,7 @@ export default function RouterEditPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Editar Router</h1>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Router</CardTitle>

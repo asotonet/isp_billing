@@ -50,11 +50,10 @@ export default function UsuariosListPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Usuarios</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-end">
         <Button asChild>
-          <Link to="/usuarios/nuevo">
+          <Link to="/settings/usuarios/nuevo">
             <Plus className="h-4 w-4" /> Nuevo Usuario
           </Link>
         </Button>
@@ -114,7 +113,7 @@ export default function UsuariosListPage() {
         columns={columns}
         data={data?.items ?? []}
         isLoading={isLoading}
-        onRowClick={(row) => navigate(`/usuarios/${row.id}`)}
+        onRowClick={(row) => navigate(`/settings/usuarios/${row.id}`)}
       />
 
       <Pagination

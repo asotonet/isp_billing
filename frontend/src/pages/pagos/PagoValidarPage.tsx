@@ -45,9 +45,7 @@ export default function PagoValidarPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Validar Pago</h1>
-
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

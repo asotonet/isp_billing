@@ -27,8 +27,7 @@ export default function ClienteCreatePage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Nuevo Cliente</h1>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Cliente</CardTitle>

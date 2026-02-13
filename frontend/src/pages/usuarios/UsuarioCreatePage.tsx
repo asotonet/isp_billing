@@ -13,7 +13,7 @@ export default function UsuarioCreatePage() {
     createMutation.mutate(data, {
       onSuccess: () => {
         toast.success("Usuario creado exitosamente");
-        navigate("/usuarios");
+        navigate("/settings/usuarios");
       },
       onError: (err: any) => {
         toast.error(err.response?.data?.detail || "Error al crear usuario");
@@ -22,8 +22,7 @@ export default function UsuarioCreatePage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Nuevo Usuario</h1>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Usuario</CardTitle>

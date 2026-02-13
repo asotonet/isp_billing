@@ -108,8 +108,7 @@ export default function UsuarioEditPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Editar Usuario</h1>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Usuario</CardTitle>

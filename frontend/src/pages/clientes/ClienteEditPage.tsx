@@ -43,8 +43,7 @@ export default function ClienteEditPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Editar Cliente</h1>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Cliente</CardTitle>

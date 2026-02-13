@@ -22,8 +22,7 @@ export default function ContratoCreatePage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Nuevo Contrato</h1>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información del Contrato</CardTitle>

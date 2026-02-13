@@ -24,16 +24,7 @@ export default function InstalacionSolicitudCreatePage() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Nueva Solicitud de Instalación</h1>
-          <p className="text-muted-foreground mt-1">
-            Crea una solicitud con datos temporales del cliente. Luego podrás activarla para crear el cliente y contrato definitivos.
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Información de la Solicitud</CardTitle>

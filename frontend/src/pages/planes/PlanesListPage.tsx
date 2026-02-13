@@ -26,6 +26,19 @@ export default function PlanesListPage() {
     { header: "Subida", accessor: (row) => `${row.velocidad_subida_mbps} Mbps` },
     { header: "Precio", accessor: (row) => formatCRC(row.precio_mensual) },
     {
+      header: "PPPoE",
+      accessor: (row) => (
+        <div className="space-y-1">
+          <Badge variant="outline" className="font-mono text-xs">
+            PLAN-{row.velocidad_bajada_mbps}MB
+          </Badge>
+          <p className="text-xs text-muted-foreground">
+            {row.velocidad_subida_mbps}M↑/{row.velocidad_bajada_mbps}M↓
+          </p>
+        </div>
+      ),
+    },
+    {
       header: "Estado",
       accessor: (row) => (
         <Badge variant={row.is_active ? "success" : "secondary"}>
@@ -55,17 +68,16 @@ export default function PlanesListPage() {
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Planes</h1>
-        {canWrite("planes") && (
+    <div className="space-y-6">
+      {canWrite("planes") && (
+        <div className="flex items-center justify-end">
           <Button asChild>
             <Link to="/planes/nuevo">
               <Plus className="h-4 w-4" /> Nuevo Plan
             </Link>
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       <DataTable columns={columns} data={data?.items ?? []} isLoading={isLoading} />
 

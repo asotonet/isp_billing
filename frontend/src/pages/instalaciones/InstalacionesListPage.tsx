@@ -62,9 +62,8 @@ export default function InstalacionesListPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Instalaciones</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-end">
         <Button asChild>
           <Link to="/instalaciones/nueva-solicitud">
             <Plus className="h-4 w-4" /> Nueva Solicitud

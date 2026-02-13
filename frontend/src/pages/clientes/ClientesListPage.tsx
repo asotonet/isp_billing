@@ -51,17 +51,16 @@ export default function ClientesListPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Clientes</h1>
-        {canWrite("clientes") && (
+    <div className="space-y-6">
+      {canWrite("clientes") && (
+        <div className="flex items-center justify-end">
           <Button asChild>
             <Link to="/clientes/nuevo">
               <Plus className="h-4 w-4" /> Nuevo Cliente
             </Link>
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">

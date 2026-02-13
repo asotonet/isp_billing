@@ -29,6 +29,14 @@ async def lifespan(app: FastAPI):
         # La inicialización se puede hacer manualmente después con el endpoint
         print(f"Note: Could not initialize permissions on startup: {e}")
 
+    # Start router uptime monitoring service
+    try:
+        from app.services.router_monitor import start_monitoring
+        await start_monitoring()
+        print("Router uptime monitoring started")
+    except Exception as e:
+        print(f"Note: Could not start router monitoring: {e}")
+
     yield
     await close_redis()
 

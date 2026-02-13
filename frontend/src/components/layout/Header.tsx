@@ -1,6 +1,7 @@
-import { Bell, ChevronRight, Menu, Search } from "lucide-react";
+import { ChevronRight, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
+import NotificationsDropdown from "./NotificationsDropdown";
 import { useLocation, Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 
@@ -14,10 +15,16 @@ const routeLabels: Record<string, string> = {
   planes: "Planes",
   contratos: "Contratos",
   pagos: "Pagos",
+  routers: "Routers",
+  instalaciones: "Instalaciones",
+  settings: "Configuración",
   usuarios: "Usuarios",
+  roles: "Roles",
+  personalizacion: "Personalización",
   nuevo: "Nuevo",
   editar: "Editar",
   validar: "Validar",
+  "nueva-solicitud": "Nueva Solicitud",
 };
 
 export default function Header({ onMenuClick }: HeaderProps) {
@@ -48,16 +55,16 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </Button>
 
         {/* Breadcrumbs */}
-        <nav className="hidden md:flex items-center space-x-1 text-sm text-muted-foreground">
+        <nav className="hidden md:flex items-center space-x-1 text-muted-foreground">
           {breadcrumbs.map((crumb, index) => (
             <div key={crumb.href} className="flex items-center">
               {index > 0 && <ChevronRight className="h-4 w-4 mx-1" />}
               {crumb.isLast ? (
-                <span className="font-medium text-foreground">{crumb.label}</span>
+                <span className="text-xl font-semibold text-foreground">{crumb.label}</span>
               ) : (
                 <Link
                   to={crumb.href}
-                  className="hover:text-foreground transition-colors"
+                  className="text-sm hover:text-foreground transition-colors"
                 >
                   {crumb.label}
                 </Link>
@@ -77,10 +84,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
             className="w-64 pl-8 h-9"
           />
         </div>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full" />
-        </Button>
+        <NotificationsDropdown />
         <ThemeToggle />
       </div>
     </header>

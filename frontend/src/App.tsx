@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/layout/ThemeToggle";
 import { router } from "@/router";
+import NetworkCanvas from "@/components/background/NetworkCanvas";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
+          <NetworkCanvas />
           <RouterProvider
             router={router}
             future={{

@@ -197,20 +197,20 @@ export default function DashboardPage() {
                   {stat.label}
                 </CardTitle>
                 <div
-                  className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}
+                  className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg transition-all duration-500`}
                   style={{
                     boxShadow: stat.glowColor,
                   }}
                 >
-                  <stat.icon className="h-6 w-6 text-white" />
+                  <stat.icon className="h-6 w-6 text-white transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6" />
                 </div>
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex items-baseline justify-between">
-                  <div className="stat-number text-5xl font-bold group-hover:scale-105 transition-transform duration-300">
+                  <div className="stat-number text-5xl font-bold transition-colors duration-300">
                     {stat.value}
                   </div>
-                  <ArrowUpRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
+                  <ArrowUpRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 </div>
                 <div className="mt-3 h-0.5 w-0 group-hover:w-full transition-all duration-700 rounded-full bg-gradient-to-r"
                      style={{ backgroundImage: `linear-gradient(90deg, ${stat.gradient})` }}

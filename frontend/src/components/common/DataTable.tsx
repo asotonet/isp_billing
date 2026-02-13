@@ -97,7 +97,7 @@ export default function DataTable<T extends { id?: string }>({
               key={row.id || rowIdx}
               className={cn(
                 "border-b border-border/50 transition-all duration-300 group relative",
-                onRowClick && "cursor-pointer hover:bg-primary/5 hover:shadow-md hover:scale-[1.01]",
+                onRowClick && "cursor-pointer hover:bg-primary/5 hover:shadow-lg",
                 "animate-fade-in"
               )}
               style={{ animationDelay: `${rowIdx * 30}ms` }}
@@ -117,8 +117,7 @@ export default function DataTable<T extends { id?: string }>({
                 <TableCell
                   key={colIdx}
                   className={cn(
-                    "relative z-10 transition-all duration-300",
-                    onRowClick && "group-hover:translate-x-1",
+                    "relative z-10 transition-colors duration-300",
                     col.className
                   )}
                 >

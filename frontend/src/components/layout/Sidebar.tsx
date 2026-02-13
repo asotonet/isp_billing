@@ -155,7 +155,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                   "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                   isActive
                     ? "bg-gradient-to-r from-[#00e5ff]/20 to-[#00e5ff]/10 text-primary shadow-lg border border-primary/30"
-                    : "text-foreground/70 hover:bg-white/5 hover:text-foreground hover:translate-x-1"
+                    : "text-foreground/70 hover:bg-white/5 hover:text-foreground"
                 )}
               >
                 {/* Active indicator glow */}
@@ -166,10 +166,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 {/* Icon with enhanced effects */}
                 <item.icon
                   className={cn(
-                    "h-5 w-5 transition-all duration-300 relative z-10",
+                    "h-5 w-5 transition-all duration-500 relative z-10",
                     isActive
                       ? "scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
-                      : "group-hover:scale-110 group-hover:rotate-12"
+                      : "group-hover:scale-105"
                   )}
                 />
 
@@ -231,7 +231,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                           "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                           isActive
                             ? "bg-gradient-to-r from-[#00e5ff]/20 to-[#00e5ff]/10 text-primary shadow-lg border border-primary/30"
-                            : "text-foreground/70 hover:bg-white/5 hover:text-foreground hover:translate-x-1"
+                            : "text-foreground/70 hover:bg-white/5 hover:text-foreground"
                         )}
                       >
                         {isActive && (
@@ -239,10 +239,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                         )}
 
                         <item.icon className={cn(
-                          "h-4 w-4 transition-all duration-300 relative z-10",
+                          "h-4 w-4 transition-all duration-500 relative z-10",
                           isActive
                             ? "scale-110 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]"
-                            : "group-hover:scale-110"
+                            : "group-hover:scale-105"
                         )} />
 
                         <span className="relative z-10">{item.label}</span>

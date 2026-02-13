@@ -150,7 +150,7 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
     <div className="relative hidden md:block w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background focus-within:border-primary/40 transition-all cursor-text">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background transition-all cursor-text">
             <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
               ref={inputRef}

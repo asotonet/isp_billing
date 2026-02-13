@@ -120,7 +120,7 @@ export default function NetworkCanvas() {
 
     // Initialize
     resizeCanvas();
-    const particleCount = Math.min(80, Math.floor(window.innerWidth / 18));
+    const particleCount = Math.min(150, Math.floor(window.innerWidth / 12));
     particlesRef.current = Array.from({ length: particleCount }, createParticle);
 
     // Event listeners
@@ -131,7 +131,8 @@ export default function NetworkCanvas() {
 
     const handleResize = () => {
       resizeCanvas();
-      particlesRef.current = Array.from({ length: particleCount }, createParticle);
+      const newParticleCount = Math.min(150, Math.floor(window.innerWidth / 12));
+      particlesRef.current = Array.from({ length: newParticleCount }, createParticle);
     };
 
     window.addEventListener('resize', handleResize);

@@ -96,7 +96,8 @@ export default function DataTable<T extends { id?: string }>({
             <TableRow
               key={row.id || rowIdx}
               className={cn(
-                "border-b border-border/50 transition-all duration-300 group relative",
+                "border-b border-border transition-all duration-300 group relative",
+                rowIdx % 2 === 0 ? "bg-card" : "bg-muted/20",
                 onRowClick && "cursor-pointer hover:bg-primary/5 hover:shadow-lg",
                 "animate-fade-in"
               )}

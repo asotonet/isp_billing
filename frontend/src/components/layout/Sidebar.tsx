@@ -121,7 +121,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <Zap className="h-6 w-6 text-white relative z-10" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold text-foreground truncate group-hover:text-gradient-cyan transition-all">
+              <h1 className="text-lg font-bold text-foreground truncate group-hover:text-primary transition-colors">
                 {companyName}
               </h1>
               <p className="text-xs text-muted-foreground flex items-center gap-1 mono">
@@ -280,7 +280,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-[#39ff85] border-2 border-background animate-pulse" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate group-hover:text-gradient-cyan transition-all">
+                <p className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                   {user.nombre_completo}
                 </p>
                 <p className="text-xs text-muted-foreground truncate mono">{user.email}</p>

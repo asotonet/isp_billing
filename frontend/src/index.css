@@ -416,14 +416,7 @@
 /* GRADIENT TEXT - like reference site */
 /* ============================================ */
 
-.text-gradient-cyan {
-  background: linear-gradient(135deg, #00e5ff 0%, #39ff85 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Removed .text-gradient-animated - replaced with solid colors for cleaner look */
+/* Removed all gradient text classes - using solid colors only for cleaner design */
 
 /* ============================================ */
 /* CARDS with subtle borders */

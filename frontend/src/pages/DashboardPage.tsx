@@ -159,7 +159,7 @@ export default function DashboardPage() {
       {/* Animated Header */}
       <div className="flex items-center justify-between animate-fade-up" style={{ animationDelay: "0.1s" }}>
         <div>
-          <h1 className="text-4xl font-bold text-gradient-cyan flex items-center gap-3">
+          <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
             <Zap className="h-8 w-8 text-primary animate-pulse" />
             Dashboard
           </h1>
@@ -235,7 +235,7 @@ export default function DashboardPage() {
           <div>
             <CardTitle className="text-2xl flex items-center gap-3">
               <CreditCard className="h-6 w-6 text-primary" />
-              <span className="text-gradient-cyan">Pagos Pendientes Recientes</span>
+              <span className="text-foreground">Pagos Pendientes Recientes</span>
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               Últimas transacciones pendientes de validación
@@ -268,7 +268,7 @@ export default function DashboardPage() {
           <div>
             <CardTitle className="text-2xl flex items-center gap-3">
               <Activity className="h-6 w-6 text-primary" />
-              <span className="text-gradient-cyan">Eventos de Routers</span>
+              <span className="text-foreground">Eventos de Routers</span>
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               Monitoreo en tiempo real de cambios y estado de routers

@@ -435,11 +435,47 @@
   );
 }
 
-/* Focus visible improvements */
+/* Focus visible improvements - Enhanced for accessibility */
 *:focus-visible {
   outline: 2px solid hsl(var(--ring));
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline-offset: 3px;
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 4px hsl(var(--ring) / 0.1),
+    0 0 20px hsl(var(--ring) / 0.3);
+  animation: focus-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes focus-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 4px hsl(var(--ring) / 0.1),
+      0 0 20px hsl(var(--ring) / 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px hsl(var(--ring) / 0.15),
+      0 0 30px hsl(var(--ring) / 0.4);
+  }
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1rem 1.5rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.skip-to-main:focus {
+  left: 1rem;
+  top: 1rem;
+  box-shadow: 0 0 30px hsl(var(--primary) / 0.5);
 }
 
 /* Tech border animation */

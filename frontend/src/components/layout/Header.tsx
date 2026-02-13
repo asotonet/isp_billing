@@ -1,9 +1,11 @@
-import { ChevronRight, Menu, Search } from "lucide-react";
+import { ChevronRight, Menu, Search, Command as CommandIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import NotificationsDropdown from "./NotificationsDropdown";
+import CommandPalette from "./CommandPalette";
 import { useLocation, Link } from "react-router-dom";
-import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useState } from "react";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -29,6 +31,7 @@ const routeLabels: Record<string, string> = {
 
 export default function Header({ onMenuClick }: HeaderProps) {
   const location = useLocation();
+  const [commandOpen, setCommandOpen] = useState(false);
 
   const getBreadcrumbs = () => {
     const paths = location.pathname.split("/").filter(Boolean);
@@ -42,51 +45,112 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-6">
-      {/* Left section */}
-      <div className="flex items-center gap-4 flex-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
-          onClick={onMenuClick}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+    <TooltipProvider delayDuration={300}>
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-6 relative">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-chart-3/5 pointer-events-none" />
 
-        {/* Breadcrumbs */}
-        <nav className="hidden md:flex items-center space-x-1 text-muted-foreground">
-          {breadcrumbs.map((crumb, index) => (
-            <div key={crumb.href} className="flex items-center">
-              {index > 0 && <ChevronRight className="h-4 w-4 mx-1" />}
-              {crumb.isLast ? (
-                <span className="text-xl font-semibold text-foreground">{crumb.label}</span>
-              ) : (
-                <Link
-                  to={crumb.href}
-                  className="text-sm hover:text-foreground transition-colors"
-                >
-                  {crumb.label}
-                </Link>
-              )}
-            </div>
-          ))}
-        </nav>
-      </div>
+        {/* Left section */}
+        <div className="flex items-center gap-4 flex-1 relative z-10">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden hover-glow"
+                onClick={onMenuClick}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Abrir menú
+            </TooltipContent>
+          </Tooltip>
 
-      {/* Right section */}
-      <div className="flex items-center gap-2">
-        <div className="relative hidden sm:block">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Buscar..."
-            className="w-64 pl-8 h-9"
-          />
+          {/* Breadcrumbs with animations */}
+          <nav className="hidden md:flex items-center space-x-1 text-muted-foreground">
+            {breadcrumbs.map((crumb, index) => (
+              <div
+                key={crumb.href}
+                className="flex items-center animate-fade-in"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {index > 0 && (
+                  <ChevronRight className="h-4 w-4 mx-1 text-primary/50" />
+                )}
+                {crumb.isLast ? (
+                  <span className="text-xl font-bold text-gradient-animated">
+                    {crumb.label}
+                  </span>
+                ) : (
+                  <Link
+                    to={crumb.href}
+                    className="text-sm hover:text-foreground transition-all duration-300 hover:translate-x-0.5 relative group"
+                  >
+                    {crumb.label}
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-chart-3 group-hover:w-full transition-all duration-300" />
+                  </Link>
+                )}
+              </div>
+            ))}
+          </nav>
         </div>
-        <NotificationsDropdown />
-        <ThemeToggle />
-      </div>
-    </header>
+
+        {/* Right section */}
+        <div className="flex items-center gap-2 relative z-10">
+          {/* Command Palette Trigger */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setCommandOpen(true)}
+                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-background/50 hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 hover:shadow-md group"
+              >
+                <Search className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="text-sm text-muted-foreground">Buscar...</span>
+                <kbd className="hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border border-primary/20 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-hover:border-primary/40">
+                  <span className="text-xs">⌘</span>K
+                </kbd>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Navegación rápida (Cmd+K)
+            </TooltipContent>
+          </Tooltip>
+
+          {/* Mobile search button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="sm:hidden hover-glow"
+                onClick={() => setCommandOpen(true)}
+              >
+                <CommandIcon className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Buscar (Cmd+K)
+            </TooltipContent>
+          </Tooltip>
+
+          <NotificationsDropdown />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <ThemeToggle />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Cambiar tema
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
+        <CommandPalette />
+      </header>
+    </TooltipProvider>
   );
 }

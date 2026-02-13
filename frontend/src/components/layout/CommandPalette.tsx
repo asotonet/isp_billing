@@ -48,9 +48,18 @@ const navigationItems = [
   },
 ];
 
-export default function CommandPalette() {
-  const [open, setOpen] = useState(false);
+interface CommandPaletteProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function CommandPalette({ open: externalOpen, onOpenChange }: CommandPaletteProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Use external state if provided, otherwise use internal
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {

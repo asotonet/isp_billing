@@ -149,7 +149,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           </Tooltip>
         </div>
 
-        <CommandPalette />
+        <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
       </header>
     </TooltipProvider>
   );

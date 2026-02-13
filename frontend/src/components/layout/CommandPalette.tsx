@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import * as clientesApi from "@/api/clientes";
+import * as contratosApi from "@/api/contratos";
+import * as planesApi from "@/api/planes";
+import * as usuariosApi from "@/api/usuarios";
 import {
   Command,
   CommandDialog,
@@ -55,11 +60,53 @@ interface CommandPaletteProps {
 
 export default function CommandPalette({ open: externalOpen, onOpenChange }: CommandPaletteProps = {}) {
   const [internalOpen, setInternalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const navigate = useNavigate();
 
   // Use external state if provided, otherwise use internal
   const open = externalOpen !== undefined ? externalOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Search queries - only fetch if there's a search term
+  const { data: clientes } = useQuery({
+    queryKey: ["search-clientes", debouncedQuery],
+    queryFn: () => clientesApi.getClientes({ page: 1, page_size: 5, search: debouncedQuery }),
+    enabled: debouncedQuery.length > 2,
+  });
+
+  const { data: contratos } = useQuery({
+    queryKey: ["search-contratos", debouncedQuery],
+    queryFn: () => contratosApi.getContratos({ page: 1, page_size: 5, search: debouncedQuery }),
+    enabled: debouncedQuery.length > 2,
+  });
+
+  const { data: planes } = useQuery({
+    queryKey: ["search-planes", debouncedQuery],
+    queryFn: () => planesApi.getPlanes({ page: 1, page_size: 5, search: debouncedQuery }),
+    enabled: debouncedQuery.length > 2,
+  });
+
+  const { data: usuarios } = useQuery({
+    queryKey: ["search-usuarios", debouncedQuery],
+    queryFn: () => usuariosApi.getUsuarios({ page: 1, page_size: 5, search: debouncedQuery }),
+    enabled: debouncedQuery.length > 2,
+  });
+
+  const hasSearchResults = debouncedQuery.length > 2 && (
+    (clientes?.items.length ?? 0) > 0 ||
+    (contratos?.items.length ?? 0) > 0 ||
+    (planes?.items.length ?? 0) > 0 ||
+    (usuarios?.items.length ?? 0) > 0
+  );
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -75,6 +122,7 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
 
   const handleSelect = (href: string) => {
     setOpen(false);
+    setSearchQuery("");
     navigate(href);
   };
 
@@ -91,19 +139,116 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
           <div className="flex items-center border-b border-primary/20 px-3">
             <Zap className="mr-2 h-5 w-5 shrink-0 text-primary animate-pulse" />
             <CommandInput
-              placeholder="Buscar o navegar... (Cmd+K)"
+              placeholder="Buscar clientes, contratos, planes... (Cmd+K)"
               className="border-0 bg-transparent focus:ring-0"
+              value={searchQuery}
+              onValueChange={setSearchQuery}
             />
           </div>
           <CommandList className="max-h-[400px] overflow-y-auto">
             <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
               <div className="flex flex-col items-center gap-2">
                 <SearchX className="h-8 w-8 opacity-50" />
-                <p>No se encontraron resultados</p>
+                <p>{debouncedQuery.length > 2 ? "No se encontraron resultados" : "Escribe al menos 3 caracteres para buscar"}</p>
               </div>
             </CommandEmpty>
 
-            {navigationItems.map((section, idx) => (
+            {/* Search Results */}
+            {hasSearchResults && (
+              <>
+                {clientes && clientes.items.length > 0 && (
+                  <CommandGroup heading="Clientes" className="text-xs uppercase tracking-wider text-muted-foreground px-2 py-2">
+                    {clientes.items.map((cliente) => (
+                      <CommandItem
+                        key={cliente.id}
+                        onSelect={() => handleSelect(`/clientes/${cliente.id}`)}
+                        className="group flex items-center gap-3 px-3 py-3 cursor-pointer rounded-lg transition-all duration-300 hover:bg-primary/10 data-[selected=true]:bg-primary/10 relative overflow-hidden"
+                      >
+                        <Users className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors relative z-10" />
+                        <div className="flex-1 relative z-10">
+                          <div className="font-medium group-hover:text-foreground">
+                            {cliente.razon_social || `${cliente.nombre} ${cliente.apellido1 || ""}`.trim()}
+                          </div>
+                          <div className="text-xs text-muted-foreground">{cliente.numero_identificacion}</div>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+
+                {contratos && contratos.items.length > 0 && (
+                  <>
+                    <CommandSeparator className="bg-primary/10" />
+                    <CommandGroup heading="Contratos" className="text-xs uppercase tracking-wider text-muted-foreground px-2 py-2">
+                      {contratos.items.map((contrato) => (
+                        <CommandItem
+                          key={contrato.id}
+                          onSelect={() => handleSelect(`/contratos/${contrato.id}`)}
+                          className="group flex items-center gap-3 px-3 py-3 cursor-pointer rounded-lg transition-all duration-300 hover:bg-primary/10 data-[selected=true]:bg-primary/10 relative overflow-hidden"
+                        >
+                          <FileText className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors relative z-10" />
+                          <div className="flex-1 relative z-10">
+                            <div className="font-medium group-hover:text-foreground">{contrato.numero_contrato}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {contrato.cliente_nombre} - {contrato.plan_nombre}
+                            </div>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </>
+                )}
+
+                {planes && planes.items.length > 0 && (
+                  <>
+                    <CommandSeparator className="bg-primary/10" />
+                    <CommandGroup heading="Planes" className="text-xs uppercase tracking-wider text-muted-foreground px-2 py-2">
+                      {planes.items.map((plan) => (
+                        <CommandItem
+                          key={plan.id}
+                          onSelect={() => handleSelect(`/planes/${plan.id}`)}
+                          className="group flex items-center gap-3 px-3 py-3 cursor-pointer rounded-lg transition-all duration-300 hover:bg-primary/10 data-[selected=true]:bg-primary/10 relative overflow-hidden"
+                        >
+                          <Wifi className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors relative z-10" />
+                          <div className="flex-1 relative z-10">
+                            <div className="font-medium group-hover:text-foreground">{plan.nombre}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {plan.velocidad_bajada}↓ / {plan.velocidad_subida}↑ Mbps
+                            </div>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </>
+                )}
+
+                {usuarios && usuarios.items.length > 0 && (
+                  <>
+                    <CommandSeparator className="bg-primary/10" />
+                    <CommandGroup heading="Usuarios" className="text-xs uppercase tracking-wider text-muted-foreground px-2 py-2">
+                      {usuarios.items.map((usuario) => (
+                        <CommandItem
+                          key={usuario.id}
+                          onSelect={() => handleSelect(`/settings/usuarios/${usuario.id}`)}
+                          className="group flex items-center gap-3 px-3 py-3 cursor-pointer rounded-lg transition-all duration-300 hover:bg-primary/10 data-[selected=true]:bg-primary/10 relative overflow-hidden"
+                        >
+                          <UserCog className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors relative z-10" />
+                          <div className="flex-1 relative z-10">
+                            <div className="font-medium group-hover:text-foreground">{usuario.nombre_completo}</div>
+                            <div className="text-xs text-muted-foreground">{usuario.email}</div>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </>
+                )}
+
+                <CommandSeparator className="bg-primary/10" />
+              </>
+            )}
+
+            {/* Navigation Items - only show when no search query */}
+            {!debouncedQuery && navigationItems.map((section, idx) => (
               <div key={section.group}>
                 {idx > 0 && <CommandSeparator className="bg-primary/10" />}
                 <CommandGroup
@@ -143,14 +288,6 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
                 </CommandGroup>
               </div>
             ))}
-
-            <CommandSeparator className="bg-primary/10" />
-            <CommandGroup heading="Sugerencia" className="px-2 py-2">
-              <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
-                <Zap className="h-3 w-3 text-primary animate-pulse" />
-                Usa <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-semibold">⌘K</kbd> para abrir este menú desde cualquier lugar
-              </div>
-            </CommandGroup>
           </CommandList>
         </Command>
       </div>

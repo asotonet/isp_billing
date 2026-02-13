@@ -36,3 +36,14 @@ Thumbs.db
 # Alembic
 backend/alembic/versions/*.pyc
 backend/alembic/versions_backup_*/
+
+# Test files
+backend/test_*.py
+backend/verify_*.py
+
+# TypeScript build info
+frontend/tsconfig.tsbuildinfo
+
+# Claude Code
+.claude/
+.agents/

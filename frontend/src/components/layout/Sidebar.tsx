@@ -58,6 +58,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   );
 
   const companyName = settings?.company_name || "ISP Billing";
+  const companyLogo = settings?.company_logo;
 
   // Escuchar cambios en la configuración
   useEffect(() => {
@@ -115,11 +116,21 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         {/* Header with enhanced logo */}
         <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border relative z-10">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#00b8d4] to-[#39ff85] flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.6)] transition-all duration-500 relative overflow-hidden">
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 shimmer" />
-              <Zap className="h-6 w-6 text-white relative z-10" />
-            </div>
+            {companyLogo ? (
+              <div className="h-10 w-10 rounded-xl bg-background flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.2)] hover:shadow-[0_0_30px_rgba(0,229,255,0.4)] transition-all duration-500 relative overflow-hidden border border-primary/20">
+                <img
+                  src={companyLogo}
+                  alt={companyName}
+                  className="h-full w-full object-contain p-1"
+                />
+              </div>
+            ) : (
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#00b8d4] to-[#39ff85] flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.6)] transition-all duration-500 relative overflow-hidden">
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 shimmer" />
+                <Zap className="h-6 w-6 text-white relative z-10" />
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <h1 className="text-lg font-bold text-foreground truncate group-hover:text-primary transition-colors">
                 {companyName}

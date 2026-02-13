@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Building2, Image as ImageIcon, Save } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Building2, Image as ImageIcon, Save, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,7 @@ export default function PersonalizacionPage() {
   const [direccion, setDireccion] = useState("");
   const [logo, setLogo] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (settings) {
@@ -128,13 +129,28 @@ export default function PersonalizacionPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="logo">Subir Logo</Label>
-              <Input
-                id="logo"
+              <Label>Subir Logo</Label>
+              <input
+                ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 onChange={handleLogoChange}
+                className="hidden"
               />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Seleccionar Imagen
+              </Button>
+              {logo && (
+                <p className="text-xs text-muted-foreground">
+                  Archivo seleccionado: {logo.name}
+                </p>
+              )}
             </div>
             {logoPreview && (
               <div className="space-y-2">

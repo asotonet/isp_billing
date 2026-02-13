@@ -67,7 +67,8 @@ export default function DataTable<T extends { id?: string }>({
       <div className="hidden md:block absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-primary/30 rounded-tl-lg" />
       <div className="hidden md:block absolute -top-2 -right-2 w-4 h-4 border-t-2 border-r-2 border-primary/30 rounded-tr-lg" />
 
-      <div className="overflow-x-auto rounded-lg border border-border">
+      <div className="w-full overflow-x-auto rounded-lg border border-border">
+        <div className="min-w-full inline-block align-middle">
         <Table>
         <TableHeader>
           <TableRow className="border-b border-primary/20 hover:bg-transparent">
@@ -139,6 +140,7 @@ export default function DataTable<T extends { id?: string }>({
           ))}
         </TableBody>
           </Table>
+        </div>
       </div>
 
       {/* Decorative tech corners bottom - hidden on mobile */}

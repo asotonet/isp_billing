@@ -128,23 +128,12 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <div className="relative overflow-hidden">
-        {/* Animated background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-3/5 animate-gradient-shift" />
-
-        {/* Scan lines effect */}
-        <div className="scan-lines absolute inset-0 pointer-events-none" />
-
-        <Command className="relative z-10 bg-transparent" shouldFilter={false}>
-          <div className="flex items-center border-b border-primary/20 px-3">
-            <Zap className="mr-2 h-5 w-5 shrink-0 text-primary animate-pulse" />
-            <CommandInput
-              placeholder="Buscar clientes, contratos, planes... (Cmd+K)"
-              className="border-0 bg-transparent focus:ring-0"
-              value={searchQuery}
-              onValueChange={setSearchQuery}
-            />
-          </div>
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Buscar clientes, contratos, planes... (Cmd+K)"
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+          />
           <CommandList className="max-h-[400px] overflow-y-auto">
             <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
               <div className="flex flex-col items-center gap-2">
@@ -293,7 +282,6 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
             ))}
           </CommandList>
         </Command>
-      </div>
     </CommandDialog>
   );
 }

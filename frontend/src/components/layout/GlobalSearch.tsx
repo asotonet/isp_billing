@@ -150,13 +150,17 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
     <div className="relative hidden md:block w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background transition-all cursor-text focus:outline-none focus-visible:outline-none">
+          <div
+            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background transition-all cursor-text"
+            style={{ outline: 'none', boxShadow: 'none' }}
+          >
             <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
               ref={inputRef}
               type="text"
               placeholder="Buscar clientes, contratos, planes..."
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground focus:outline-none focus:ring-0 focus:border-0"
+              style={{ outline: 'none', boxShadow: 'none', border: 'none' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}

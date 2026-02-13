@@ -573,10 +573,17 @@
 [data-radix-popper-content-wrapper]:focus-visible,
 [data-radix-popper-content-wrapper] *:focus-visible,
 [role="dialog"]:focus-visible,
-[role="dialog"] *:focus-visible {
+[role="dialog"] *:focus-visible,
+[data-radix-popover-trigger]:focus-visible,
+[data-radix-popover-trigger] *:focus-visible,
+[data-radix-popover-trigger]:focus,
+[data-radix-popover-trigger] *:focus,
+[data-radix-popover-trigger]:focus-within,
+[data-radix-popover-trigger] *:focus-within {
   outline: none !important;
   box-shadow: none !important;
   animation: none !important;
+  border-color: hsl(var(--border)) !important;
 }
 
 @keyframes focus-pulse {

@@ -124,68 +124,68 @@ export default function DashboardPage() {
       label: "Total Clientes",
       value: clientesData?.total ?? 0,
       icon: Users,
-      gradient: "from-blue-500 via-cyan-500 to-blue-600",
-      glowColor: "0 0 30px rgba(14, 165, 233, 0.4)",
+      gradient: "from-[#00e5ff] via-[#00b8d4] to-[#0097a7]",
+      glowColor: "0 0 30px rgba(0, 229, 255, 0.5)",
       href: "/clientes",
     },
     {
       label: "Contratos Activos",
       value: contratosData?.total ?? 0,
       icon: FileText,
-      gradient: "from-violet-500 via-purple-500 to-violet-600",
-      glowColor: "0 0 30px rgba(139, 92, 246, 0.4)",
+      gradient: "from-[#a78bfa] via-[#8b5cf6] to-[#7c3aed]",
+      glowColor: "0 0 30px rgba(167, 139, 250, 0.5)",
       href: "/contratos",
     },
     {
       label: "Pagos Pendientes",
       value: pagosData?.total ?? 0,
       icon: CreditCard,
-      gradient: "from-orange-500 via-red-500 to-orange-600",
-      glowColor: "0 0 30px rgba(249, 115, 22, 0.4)",
+      gradient: "from-[#ff9052] via-[#ff7043] to-[#f4511e]",
+      glowColor: "0 0 30px rgba(255, 144, 82, 0.5)",
       href: "/pagos",
     },
     {
       label: "Planes Activos",
       value: planesData?.total ?? 0,
       icon: Wifi,
-      gradient: "from-green-500 via-emerald-500 to-green-600",
-      glowColor: "0 0 30px rgba(16, 185, 129, 0.4)",
+      gradient: "from-[#39ff85] via-[#00e676] to-[#00c853]",
+      glowColor: "0 0 30px rgba(57, 255, 133, 0.5)",
       href: "/planes",
     },
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-up">
       {/* Animated Header */}
-      <div className="flex items-center justify-between animate-slide-in-top">
+      <div className="flex items-center justify-between animate-fade-up" style={{ animationDelay: "0.1s" }}>
         <div>
-          <h1 className="text-4xl font-bold text-gradient-animated flex items-center gap-3">
-            <Zap className="h-8 w-8 text-primary" />
+          <h1 className="text-4xl font-bold text-gradient-cyan flex items-center gap-3">
+            <Zap className="h-8 w-8 text-primary animate-pulse" />
             Dashboard
           </h1>
           <p className="text-muted-foreground mt-2">
             Gestión en tiempo real de tu ISP
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground animate-pulse-glow">
-          <div className="h-2 w-2 rounded-full bg-green-500 animate-breathing" />
-          <span>Sistema activo</span>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="h-2 w-2 rounded-full bg-[#39ff85] animate-pulse" />
+          <span className="mono">Sistema activo</span>
         </div>
       </div>
 
       {/* Stats Cards with Enhanced Animations */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 stagger-fade">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <Link key={stat.label} to={stat.href}>
             <Card
-              className="card-enhanced cursor-pointer group relative overflow-hidden border-0 shadow-xl scan-lines"
+              className="glass cursor-pointer group relative overflow-hidden border border-white/5 shadow-2xl hover:shadow-[0_0_30px_rgba(0,229,255,0.15)] transition-all duration-500 animate-fade-up"
               style={{
-                animationDelay: `${index * 50}ms`,
+                animationDelay: `${0.2 + index * 0.1}s`,
               }}
             >
               {/* Animated background gradient */}
               <div
-                className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500"
+                className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500"
                 style={{
                   background: `linear-gradient(135deg, ${stat.gradient})`,
                 }}
@@ -193,11 +193,11 @@ export default function DashboardPage() {
 
               {/* Content */}
               <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
                   {stat.label}
                 </CardTitle>
                 <div
-                  className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 animate-breathing`}
+                  className={`h-12 w-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}
                   style={{
                     boxShadow: stat.glowColor,
                   }}
@@ -207,12 +207,12 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex items-baseline justify-between">
-                  <div className="text-4xl font-bold group-hover:scale-110 transition-transform">
+                  <div className="stat-number text-5xl font-bold group-hover:scale-105 transition-transform duration-300">
                     {stat.value}
                   </div>
                   <ArrowUpRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
                 </div>
-                <div className="mt-2 h-1 w-0 group-hover:w-full transition-all duration-500 rounded-full bg-gradient-to-r opacity-50"
+                <div className="mt-3 h-0.5 w-0 group-hover:w-full transition-all duration-700 rounded-full bg-gradient-to-r"
                      style={{ backgroundImage: `linear-gradient(90deg, ${stat.gradient})` }}
                 />
               </CardContent>
@@ -227,21 +227,21 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Payments with Glass Effect */}
-      <Card className="animate-slide-in-bottom shadow-2xl glass-strong border-tech-animated relative overflow-hidden" style={{ animationDelay: "200ms" }}>
+      <Card className="animate-fade-up shadow-2xl glass border border-white/5 relative overflow-hidden" style={{ animationDelay: "0.6s" }}>
         {/* Scan lines overlay */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 
         <CardHeader className="flex flex-row items-center justify-between relative z-10">
           <div>
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <CreditCard className="h-6 w-6 text-primary animate-pulse" />
-              <span className="text-gradient-animated">Pagos Pendientes Recientes</span>
+            <CardTitle className="text-2xl flex items-center gap-3">
+              <CreditCard className="h-6 w-6 text-primary" />
+              <span className="text-gradient-cyan">Pagos Pendientes Recientes</span>
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               Últimas transacciones pendientes de validación
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild className="hover-glow ripple-effect">
+          <Button variant="outline" size="sm" asChild className="border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300">
             <Link to="/pagos">
               Ver todos
               <ArrowUpRight className="h-4 w-4 ml-1" />
@@ -260,21 +260,21 @@ export default function DashboardPage() {
       </Card>
 
       {/* Router Events History with Tech Border */}
-      <Card className="animate-slide-in-bottom shadow-2xl glass-strong card-tech relative overflow-hidden" style={{ animationDelay: "300ms" }}>
+      <Card className="animate-fade-up shadow-2xl glass border border-white/5 relative overflow-hidden" style={{ animationDelay: "0.7s" }}>
         {/* Scan lines overlay */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 
         <CardHeader className="flex flex-row items-center justify-between relative z-10">
           <div>
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <Activity className="h-6 w-6 text-primary animate-pulse" />
-              <span className="text-gradient-animated">Eventos de Routers</span>
+            <CardTitle className="text-2xl flex items-center gap-3">
+              <Activity className="h-6 w-6 text-primary" />
+              <span className="text-gradient-cyan">Eventos de Routers</span>
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               Monitoreo en tiempo real de cambios y estado de routers
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild className="hover-glow ripple-effect">
+          <Button variant="outline" size="sm" asChild className="border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300">
             <Link to="/routers">
               Ver routers
               <ArrowUpRight className="h-4 w-4 ml-1" />

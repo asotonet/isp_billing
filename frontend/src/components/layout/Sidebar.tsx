@@ -102,30 +102,30 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar-background border-r border-sidebar-border transition-all duration-300 lg:static lg:translate-x-0 scan-lines",
-          open ? "translate-x-0 shadow-2xl" : "-translate-x-full"
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col glass-nav border-r border-white/5 transition-all duration-300 lg:static lg:translate-x-0",
+          open ? "translate-x-0 shadow-[0_0_50px_rgba(0,229,255,0.1)]" : "-translate-x-full"
         )}
       >
         {/* Tech border glow */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-1/2 -right-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-breathing" />
-          <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 bg-chart-3/5 rounded-full blur-3xl animate-breathing" style={{ animationDelay: '1s' }} />
+          <div className="absolute -top-1/2 -right-1/2 w-96 h-96 bg-[#00e5ff]/3 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 bg-[#a78bfa]/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
 
         {/* Header with enhanced logo */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border relative z-10 backdrop-blur-sm bg-sidebar-background/80">
+        <div className="flex h-16 items-center justify-between px-6 border-b border-white/5 relative z-10">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 flex items-center justify-center shadow-lg hover-glow animate-breathing relative overflow-hidden">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#00b8d4] to-[#39ff85] flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.6)] transition-all duration-500 relative overflow-hidden">
               {/* Shimmer effect */}
               <div className="absolute inset-0 shimmer" />
               <Zap className="h-6 w-6 text-white relative z-10" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold text-sidebar-foreground truncate group-hover:text-gradient-animated transition-all">
+              <h1 className="text-lg font-bold text-foreground truncate group-hover:text-gradient-cyan transition-all">
                 {companyName}
               </h1>
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+              <p className="text-xs text-muted-foreground flex items-center gap-1 mono">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#39ff85] animate-pulse" />
                 Costa Rica
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden hover-glow"
+            className="lg:hidden hover:bg-white/5 transition-colors"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -141,7 +141,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         </div>
 
         {/* Navigation with staggered animations */}
-        <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto relative z-10 stagger-fade">
+        <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto relative z-10">
           {filteredNavItems.map((item, index) => {
             const isActive =
               location.pathname === item.href ||
@@ -154,14 +154,13 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 className={cn(
                   "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                   isActive
-                    ? "bg-gradient-to-r from-sidebar-primary/90 to-sidebar-primary text-sidebar-primary-foreground shadow-lg"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1 hover:shadow-md"
+                    ? "bg-gradient-to-r from-[#00e5ff]/20 to-[#00e5ff]/10 text-primary shadow-lg border border-primary/30"
+                    : "text-foreground/70 hover:bg-white/5 hover:text-foreground hover:translate-x-1"
                 )}
-                style={{ animationDelay: `${index * 50}ms` }}
               >
                 {/* Active indicator glow */}
                 {isActive && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-chart-3/20 blur-xl" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#00e5ff]/10 to-[#39ff85]/10 blur-lg" />
                 )}
 
                 {/* Icon with enhanced effects */}
@@ -178,7 +177,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
                 {/* Active indicator line with pulse */}
                 {isActive && (
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-white rounded-l-full animate-pulse-glow" />
+                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#00e5ff] to-[#39ff85] rounded-l-full animate-pulse" />
                 )}
 
                 {/* Hover shine effect */}
@@ -197,8 +196,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 className={cn(
                   "w-full flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                   location.pathname.startsWith("/settings") || location.pathname.startsWith("/routers")
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-md"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:shadow-md"
+                    ? "bg-white/5 text-foreground shadow-md"
+                    : "text-foreground/70 hover:bg-white/5 hover:text-foreground"
                 )}
               >
                 <Settings className={cn(
@@ -219,7 +218,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               </button>
 
               {settingsExpanded && (
-                <div className="space-y-1 ml-4 pl-4 border-l-2 border-primary/30 animate-slide-in-left">
+                <div className="space-y-1 ml-4 pl-4 border-l-2 border-primary/20">
                   {filteredSettingsItems.map((item, index) => {
                     const isActive = location.pathname === item.href ||
                       location.pathname.startsWith(item.href);
@@ -229,15 +228,14 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                         to={item.href}
                         onClick={onClose}
                         className={cn(
-                          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden animate-fade-in",
+                          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                           isActive
-                            ? "bg-gradient-to-r from-sidebar-primary/90 to-sidebar-primary text-sidebar-primary-foreground shadow-lg"
-                            : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1 hover:shadow-md"
+                            ? "bg-gradient-to-r from-[#00e5ff]/20 to-[#00e5ff]/10 text-primary shadow-lg border border-primary/30"
+                            : "text-foreground/70 hover:bg-white/5 hover:text-foreground hover:translate-x-1"
                         )}
-                        style={{ animationDelay: `${index * 50}ms` }}
                       >
                         {isActive && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-chart-3/20 blur-xl" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#00e5ff]/10 to-[#39ff85]/10 blur-lg" />
                         )}
 
                         <item.icon className={cn(
@@ -250,7 +248,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                         <span className="relative z-10">{item.label}</span>
 
                         {isActive && (
-                          <div className="absolute right-0 top-0 bottom-0 w-1 bg-white rounded-l-full animate-pulse-glow" />
+                          <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#00e5ff] to-[#39ff85] rounded-l-full animate-pulse" />
                         )}
 
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -265,34 +263,34 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           )}
         </nav>
 
-        <Separator className="mx-3 bg-sidebar-border/50" />
+        <Separator className="mx-3 bg-white/5" />
 
         {/* User section with enhanced avatar */}
         {user && (
-          <div className="p-4 space-y-3 relative z-10 backdrop-blur-sm bg-sidebar-background/80">
-            <div className="flex items-center gap-3 px-2 group cursor-pointer hover-lift">
+          <div className="p-4 space-y-3 relative z-10">
+            <div className="flex items-center gap-3 px-2 group cursor-pointer">
               <div className="relative">
-                <Avatar className="h-11 w-11 ring-2 ring-primary/30 group-hover:ring-primary/60 transition-all duration-300">
-                  <AvatarFallback className="bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 text-white text-sm font-bold relative overflow-hidden">
+                <Avatar className="h-11 w-11 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300">
+                  <AvatarFallback className="bg-gradient-to-br from-[#00e5ff] via-[#00b8d4] to-[#39ff85] text-white text-sm font-bold relative overflow-hidden">
                     <div className="absolute inset-0 shimmer" />
-                    <span className="relative z-10">{getInitials(user.nombre_completo)}</span>
+                    <span className="relative z-10 mono">{getInitials(user.nombre_completo)}</span>
                   </AvatarFallback>
                 </Avatar>
                 {/* Online indicator */}
-                <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-sidebar-background animate-pulse" />
+                <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-[#39ff85] border-2 border-background animate-pulse" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-sidebar-foreground truncate group-hover:text-gradient-animated transition-all">
+                <p className="text-sm font-semibold text-foreground truncate group-hover:text-gradient-cyan transition-all">
                   {user.nombre_completo}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                <p className="text-xs text-muted-foreground truncate mono">{user.email}</p>
               </div>
             </div>
 
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 hover:shadow-md hover-glow ripple-effect transition-all duration-300"
+              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all duration-300"
               onClick={() => logoutMutation.mutate()}
               disabled={logoutMutation.isPending}
             >

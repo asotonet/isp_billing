@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,12 +41,23 @@ export default function ClientesListPage() {
   const { canWrite } = usePermissions();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("all");
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const { data, isLoading } = useClientes({
     page,
     page_size: 20,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     is_active: activeFilter === "all" ? undefined : activeFilter === "active",
   });
 
@@ -69,10 +80,7 @@ export default function ClientesListPage() {
             placeholder="Buscar por nombre, cédula, email..."
             className="pl-9"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <Select value={activeFilter} onValueChange={(v) => { setActiveFilter(v); setPage(1); }}>

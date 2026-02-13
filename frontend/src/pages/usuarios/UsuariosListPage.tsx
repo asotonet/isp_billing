@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,13 +38,24 @@ export default function UsuariosListPage() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [rolFilter, setRolFilter] = useState<string>("all");
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const { data, isLoading } = useUsuarios({
     page,
     page_size: 20,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     is_active: activeFilter === "all" ? undefined : activeFilter === "active",
     rol: rolFilter === "all" ? undefined : (rolFilter as RolUsuario),
   });
@@ -66,10 +77,7 @@ export default function UsuariosListPage() {
             placeholder="Buscar por nombre o email..."
             className="pl-9"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <Select

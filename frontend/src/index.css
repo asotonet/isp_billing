@@ -3,49 +3,49 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light mode - soft and comfortable */
-  --background: 220 20% 96%;          /* soft light gray */
-  --background-secondary: 220 15% 93%; /* slightly darker gray */
-  --foreground: 220 40% 10%;          /* dark text */
+  /* Light mode - professional design system palette */
+  --background: 220 18% 92%;          /* neutral gray background */
+  --background-secondary: 220 15% 88%; /* secondary surfaces */
+  --foreground: 220 15% 15%;          /* darker text for better contrast */
 
-  --card: 0 0% 99%;                   /* almost white, not pure */
-  --card-foreground: 220 40% 10%;
-  --popover: 0 0% 99%;
-  --popover-foreground: 220 40% 10%;
+  --card: 220 20% 96%;                /* elevated cards */
+  --card-foreground: 220 15% 15%;
+  --popover: 220 20% 97%;
+  --popover-foreground: 220 15% 15%;
 
-  /* Cyan primary */
-  --primary: 187 100% 42%;            /* #00b8d4 - slightly darker cyan for light mode */
+  /* Cyan primary - adjusted for accessibility */
+  --primary: 187 85% 38%;             /* #0ea5b8 - darker cyan, WCAG compliant */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 15% 90%;
-  --secondary-foreground: 220 40% 10%;
-  --muted: 220 15% 92%;
-  --muted-foreground: 220 15% 45%;
-  --accent: 187 100% 42%;
+  --secondary: 220 15% 85%;
+  --secondary-foreground: 220 15% 20%;
+  --muted: 220 15% 88%;
+  --muted-foreground: 220 10% 40%;    /* improved contrast */
+  --accent: 187 85% 38%;
   --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 84% 60%;
+  --destructive: 0 70% 50%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 145 80% 42%;             /* darker green for light mode */
+  --success: 145 60% 40%;             /* darker green, better contrast */
   --success-foreground: 0 0% 100%;
 
-  --warning: 25 95% 53%;              /* adjusted orange */
+  --warning: 25 85% 48%;              /* darker orange */
   --warning-foreground: 0 0% 100%;
 
-  --border: 220 20% 88%;              /* more visible borders */
-  --input: 220 20% 88%;
-  --ring: 187 100% 42%;
+  --border: 220 15% 82%;              /* visible borders */
+  --input: 220 15% 82%;
+  --ring: 187 85% 38%;
   --radius: 0.75rem;
 
   /* Sidebar light mode */
-  --sidebar-background: 0 0% 97%;    /* soft gray */
-  --sidebar-foreground: 220 40% 10%;
-  --sidebar-primary: 187 100% 42%;
+  --sidebar-background: 220 20% 94%; /* distinct sidebar */
+  --sidebar-foreground: 220 15% 15%;
+  --sidebar-primary: 187 85% 38%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 15% 92%;
-  --sidebar-accent-foreground: 220 40% 10%;
-  --sidebar-border: 220 20% 82%;     /* visible border */
+  --sidebar-accent: 220 15% 88%;
+  --sidebar-accent-foreground: 220 15% 20%;
+  --sidebar-border: 220 15% 78%;     /* clear separation */
 
   /* Charts - vibrant accent colors */
   --chart-1: 187 100% 42%;            /* cyan */

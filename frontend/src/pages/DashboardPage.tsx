@@ -125,7 +125,7 @@ export default function DashboardPage() {
       value: clientesData?.total ?? 0,
       icon: Users,
       gradient: "from-[#00e5ff] via-[#00b8d4] to-[#0097a7]",
-      glowColor: "0 0 30px rgba(0, 229, 255, 0.5)",
+      glowColor: "0 0 15px rgba(0, 229, 255, 0.2)",
       href: "/clientes",
     },
     {
@@ -133,7 +133,7 @@ export default function DashboardPage() {
       value: contratosData?.total ?? 0,
       icon: FileText,
       gradient: "from-[#a78bfa] via-[#8b5cf6] to-[#7c3aed]",
-      glowColor: "0 0 30px rgba(167, 139, 250, 0.5)",
+      glowColor: "0 0 15px rgba(167, 139, 250, 0.2)",
       href: "/contratos",
     },
     {
@@ -141,7 +141,7 @@ export default function DashboardPage() {
       value: pagosData?.total ?? 0,
       icon: CreditCard,
       gradient: "from-[#ff9052] via-[#ff7043] to-[#f4511e]",
-      glowColor: "0 0 30px rgba(255, 144, 82, 0.5)",
+      glowColor: "0 0 15px rgba(255, 144, 82, 0.2)",
       href: "/pagos",
     },
     {
@@ -149,7 +149,7 @@ export default function DashboardPage() {
       value: planesData?.total ?? 0,
       icon: Wifi,
       gradient: "from-[#39ff85] via-[#00e676] to-[#00c853]",
-      glowColor: "0 0 30px rgba(57, 255, 133, 0.5)",
+      glowColor: "0 0 15px rgba(57, 255, 133, 0.2)",
       href: "/planes",
     },
   ];

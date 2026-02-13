@@ -1,11 +1,11 @@
-import { ChevronRight, Menu, Search, Command as CommandIcon } from "lucide-react";
+import { ChevronRight, Menu, Command as CommandIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import NotificationsDropdown from "./NotificationsDropdown";
-import CommandPalette from "./CommandPalette";
+import GlobalSearch from "./GlobalSearch";
 import { useLocation, Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -43,6 +43,18 @@ export default function Header({ onMenuClick }: HeaderProps) {
   };
 
   const breadcrumbs = getBreadcrumbs();
+
+  // Listen for Cmd+K
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setCommandOpen((open) => !open);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -99,24 +111,8 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
         {/* Right section */}
         <div className="flex items-center gap-1 md:gap-2 relative z-10">
-          {/* Command Palette Trigger */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setCommandOpen(true)}
-                className="hidden md:flex items-center gap-2 px-2 md:px-3 py-1.5 md:py-2 rounded-lg border border-primary/20 bg-background/50 hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 hover:shadow-md group"
-              >
-                <Search className="h-3.5 w-3.5 md:h-4 md:w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">Buscar...</span>
-                <kbd className="hidden xl:inline-flex h-5 select-none items-center gap-1 rounded border border-primary/20 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-hover:border-primary/40">
-                  <span className="text-xs">⌘</span>K
-                </kbd>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              Navegación rápida (Cmd+K)
-            </TooltipContent>
-          </Tooltip>
+          {/* Global Search */}
+          <GlobalSearch open={commandOpen} onOpenChange={setCommandOpen} />
 
           {/* Mobile search button */}
           <Tooltip>
@@ -124,7 +120,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="sm:hidden hover-glow"
+                className="md:hidden hover-glow"
                 onClick={() => setCommandOpen(true)}
               >
                 <CommandIcon className="h-5 w-5" />
@@ -149,7 +145,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
           </Tooltip>
         </div>
 
-        <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
       </header>
     </TooltipProvider>
   );

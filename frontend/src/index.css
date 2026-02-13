@@ -39,13 +39,13 @@
   --radius: 0.75rem;
 
   /* Sidebar light mode */
-  --sidebar-background: 0 0% 100%;
+  --sidebar-background: 0 0% 98%;    /* very light gray instead of pure white */
   --sidebar-foreground: 220 40% 10%;
   --sidebar-primary: 187 100% 42%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 220 15% 95%;
   --sidebar-accent-foreground: 220 40% 10%;
-  --sidebar-border: 220 13% 91%;
+  --sidebar-border: 220 20% 85%;     /* more visible border */
 
   /* Charts - vibrant accent colors */
   --chart-1: 187 100% 42%;            /* cyan */

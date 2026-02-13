@@ -102,8 +102,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col glass-nav border-r border-white/5 transition-all duration-300 lg:static lg:translate-x-0",
-          open ? "translate-x-0 shadow-[0_0_50px_rgba(0,229,255,0.1)]" : "-translate-x-full"
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar-background border-r border-sidebar-border transition-all duration-300 lg:static lg:translate-x-0",
+          open ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         )}
       >
         {/* Tech border glow */}
@@ -113,7 +113,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         </div>
 
         {/* Header with enhanced logo */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-white/5 relative z-10">
+        <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border relative z-10">
           <div className="flex items-center gap-3 group cursor-pointer">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#00b8d4] to-[#39ff85] flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.6)] transition-all duration-500 relative overflow-hidden">
               {/* Shimmer effect */}

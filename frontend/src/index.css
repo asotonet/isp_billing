@@ -6,21 +6,21 @@
   /* Light mode - cyan-tinted professional palette */
   --background: 200 25% 92%;          /* cyan-tinted gray background */
   --background-secondary: 200 20% 88%; /* secondary surfaces */
-  --foreground: 210 20% 12%;          /* dark blue-gray text */
+  --foreground: 210 25% 8%;           /* darker text for better contrast */
 
   --card: 200 30% 96%;                /* elevated cards with cyan tint */
-  --card-foreground: 210 20% 12%;
+  --card-foreground: 210 25% 8%;
   --popover: 200 30% 97%;
-  --popover-foreground: 210 20% 12%;
+  --popover-foreground: 210 25% 8%;
 
   /* Cyan primary - vibrant and accessible */
   --primary: 187 90% 40%;             /* #0bb5cc - vibrant cyan */
   --primary-foreground: 0 0% 100%;
 
   --secondary: 200 20% 85%;
-  --secondary-foreground: 210 20% 15%;
+  --secondary-foreground: 210 25% 10%;
   --muted: 200 20% 88%;
-  --muted-foreground: 210 12% 38%;    /* blue-gray muted text */
+  --muted-foreground: 210 20% 28%;    /* darker muted text for better readability */
   --accent: 187 90% 40%;
   --accent-foreground: 0 0% 100%;
 

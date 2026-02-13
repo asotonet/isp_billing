@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Users, FileText, Wifi, UserCog, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
 import * as clientesApi from "@/api/clientes";
 import * as contratosApi from "@/api/contratos";
 import * as planesApi from "@/api/planes";

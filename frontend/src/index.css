@@ -569,6 +569,16 @@
   animation: focus-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Disable focus outline for popover and search */
+[data-radix-popper-content-wrapper]:focus-visible,
+[data-radix-popper-content-wrapper] *:focus-visible,
+[role="dialog"]:focus-visible,
+[role="dialog"] *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
 @keyframes focus-pulse {
   0%, 100% {
     box-shadow:

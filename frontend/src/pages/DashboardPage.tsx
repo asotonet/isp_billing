@@ -187,7 +187,7 @@ export default function DashboardPage() {
 
               {/* Content */}
               <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-                <CardTitle className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
+                <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-wider">
                   {stat.label}
                 </CardTitle>
                 <div
@@ -201,10 +201,10 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex items-baseline justify-between">
-                  <div className="stat-number text-3xl font-bold transition-colors duration-300">
+                  <div className="stat-number text-4xl font-bold transition-colors duration-300">
                     {stat.value}
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <ArrowUpRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 </div>
                 <div className="mt-3 h-0.5 w-0 group-hover:w-full transition-all duration-700 rounded-full bg-gradient-to-r"
                      style={{ backgroundImage: `linear-gradient(90deg, ${stat.gradient})` }}

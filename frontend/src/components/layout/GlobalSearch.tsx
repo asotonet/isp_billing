@@ -177,9 +177,6 @@ export default function GlobalSearch({ open: externalOpen, onOpenChange }: Globa
                 <X className="h-4 w-4 text-muted-foreground" />
               </button>
             )}
-            <kbd className="hidden xl:flex h-5 select-none items-center gap-1 rounded border border-border bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground shrink-0">
-              <span className="text-xs">⌘</span>K
-            </kbd>
           </div>
         </PopoverTrigger>
         <PopoverContent

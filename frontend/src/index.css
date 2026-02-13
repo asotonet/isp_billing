@@ -3,49 +3,49 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light mode - professional design system palette */
-  --background: 220 18% 92%;          /* neutral gray background */
-  --background-secondary: 220 15% 88%; /* secondary surfaces */
-  --foreground: 220 15% 15%;          /* darker text for better contrast */
+  /* Light mode - cyan-tinted professional palette */
+  --background: 200 25% 92%;          /* cyan-tinted gray background */
+  --background-secondary: 200 20% 88%; /* secondary surfaces */
+  --foreground: 210 20% 12%;          /* dark blue-gray text */
 
-  --card: 220 20% 96%;                /* elevated cards */
-  --card-foreground: 220 15% 15%;
-  --popover: 220 20% 97%;
-  --popover-foreground: 220 15% 15%;
+  --card: 200 30% 96%;                /* elevated cards with cyan tint */
+  --card-foreground: 210 20% 12%;
+  --popover: 200 30% 97%;
+  --popover-foreground: 210 20% 12%;
 
-  /* Cyan primary - adjusted for accessibility */
-  --primary: 187 85% 38%;             /* #0ea5b8 - darker cyan, WCAG compliant */
+  /* Cyan primary - vibrant and accessible */
+  --primary: 187 90% 40%;             /* #0bb5cc - vibrant cyan */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 15% 85%;
-  --secondary-foreground: 220 15% 20%;
-  --muted: 220 15% 88%;
-  --muted-foreground: 220 10% 40%;    /* improved contrast */
-  --accent: 187 85% 38%;
+  --secondary: 200 20% 85%;
+  --secondary-foreground: 210 20% 15%;
+  --muted: 200 20% 88%;
+  --muted-foreground: 210 12% 38%;    /* blue-gray muted text */
+  --accent: 187 90% 40%;
   --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 70% 50%;
+  --destructive: 0 75% 52%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 145 60% 40%;             /* darker green, better contrast */
+  --success: 145 65% 42%;             /* vibrant green */
   --success-foreground: 0 0% 100%;
 
-  --warning: 25 85% 48%;              /* darker orange */
+  --warning: 25 90% 50%;              /* vibrant orange */
   --warning-foreground: 0 0% 100%;
 
-  --border: 220 15% 82%;              /* visible borders */
-  --input: 220 15% 82%;
-  --ring: 187 85% 38%;
+  --border: 200 18% 80%;              /* cyan-tinted borders */
+  --input: 200 18% 80%;
+  --ring: 187 90% 40%;
   --radius: 0.75rem;
 
   /* Sidebar light mode */
-  --sidebar-background: 220 20% 94%; /* distinct sidebar */
-  --sidebar-foreground: 220 15% 15%;
-  --sidebar-primary: 187 85% 38%;
+  --sidebar-background: 200 25% 94%; /* cyan-tinted sidebar */
+  --sidebar-foreground: 210 20% 12%;
+  --sidebar-primary: 187 90% 40%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 15% 88%;
-  --sidebar-accent-foreground: 220 15% 20%;
-  --sidebar-border: 220 15% 78%;     /* clear separation */
+  --sidebar-accent: 200 20% 88%;
+  --sidebar-accent-foreground: 210 20% 15%;
+  --sidebar-border: 200 18% 76%;     /* cyan-tinted border */
 
   /* Charts - vibrant accent colors */
   --chart-1: 187 100% 42%;            /* cyan */

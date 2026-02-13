@@ -109,7 +109,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           </nav>
 
           {/* Global Search */}
-          <div className="flex-1 max-w-md ml-auto hidden lg:block">
+          <div className="flex-1 ml-auto hidden lg:block">
             <GlobalSearch open={commandOpen} onOpenChange={setCommandOpen} />
           </div>
         </div>

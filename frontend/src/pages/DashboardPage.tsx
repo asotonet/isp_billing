@@ -172,7 +172,7 @@ export default function DashboardPage() {
         {stats.map((stat, index) => (
           <Link key={stat.label} to={stat.href}>
             <Card
-              className="glass cursor-pointer group relative overflow-hidden border border-white/5 shadow-2xl hover:shadow-[0_0_30px_rgba(0,229,255,0.15)] transition-all duration-500 animate-fade-up"
+              className="glass cursor-pointer group relative overflow-hidden border border-white/5 shadow-adaptive-lg hover:shadow-adaptive-xl transition-all duration-500 animate-fade-up"
               style={{
                 animationDelay: `${0.2 + index * 0.1}s`,
               }}
@@ -221,7 +221,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Payments with Glass Effect */}
-      <Card className="animate-fade-up shadow-2xl glass border border-white/5 relative overflow-hidden" style={{ animationDelay: "0.6s" }}>
+      <Card className="animate-fade-up shadow-adaptive-lg glass border border-white/5 relative overflow-hidden" style={{ animationDelay: "0.6s" }}>
         {/* Scan lines overlay */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 
@@ -254,7 +254,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* Router Events History with Tech Border */}
-      <Card className="animate-fade-up shadow-2xl glass border border-white/5 relative overflow-hidden" style={{ animationDelay: "0.7s" }}>
+      <Card className="animate-fade-up shadow-adaptive-lg glass border border-white/5 relative overflow-hidden" style={{ animationDelay: "0.7s" }}>
         {/* Scan lines overlay */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 

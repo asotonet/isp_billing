@@ -98,7 +98,7 @@ export default function DataTable<T extends { id?: string }>({
               className={cn(
                 "border-b border-border transition-all duration-300 group relative",
                 rowIdx % 2 === 0 ? "bg-card" : "bg-muted/20",
-                onRowClick && "cursor-pointer hover:bg-primary/5 hover:shadow-lg",
+                onRowClick && "cursor-pointer hover:bg-primary/5 hover:shadow-adaptive-md",
                 "animate-fade-in"
               )}
               style={{ animationDelay: `${rowIdx * 30}ms` }}

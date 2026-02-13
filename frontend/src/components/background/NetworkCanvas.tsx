@@ -40,8 +40,8 @@ export default function NetworkCanvas() {
     if (!ctx) return;
 
     // Theme-based colors - high contrast
-    const particleColor = isDark ? '0, 229, 255' : '11, 117, 140'; // bright cyan for dark, dark cyan for light
-    const connectionColor = isDark ? '0, 229, 255' : '11, 117, 140';
+    const particleColor = isDark ? '0, 229, 255' : '20, 40, 60'; // bright cyan for dark, dark blue-gray for light
+    const connectionColor = isDark ? '0, 229, 255' : '20, 40, 60';
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -99,7 +99,7 @@ export default function NetworkCanvas() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const alpha = (1 - dist / 160) * (isDark ? 0.12 : 0.15);
+            const alpha = (1 - dist / 160) * (isDark ? 0.12 : 0.2);
             ctx.strokeStyle = `rgba(${connectionColor}, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();

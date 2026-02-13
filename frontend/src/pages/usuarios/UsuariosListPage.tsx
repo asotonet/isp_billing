@@ -84,11 +84,11 @@ export default function UsuariosListPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos los roles</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
-            <SelectItem value="operador">Operador</SelectItem>
-            <SelectItem value="tecnico">Técnico</SelectItem>
-            <SelectItem value="auditor">Auditor</SelectItem>
-            <SelectItem value="soporte">Soporte</SelectItem>
+            <SelectItem value="ADMIN">Admin</SelectItem>
+            <SelectItem value="OPERADOR">Operador</SelectItem>
+            <SelectItem value="TECNICO">Técnico</SelectItem>
+            <SelectItem value="AUDITOR">Auditor</SelectItem>
+            <SelectItem value="SOPORTE">Soporte</SelectItem>
           </SelectContent>
         </Select>
         <Select

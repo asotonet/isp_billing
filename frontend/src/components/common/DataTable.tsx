@@ -98,7 +98,7 @@ export default function DataTable<T extends { id?: string }>({
             <TableRow
               key={row.id || rowIdx}
               className={cn(
-                "border-b border-border transition-all duration-300 group relative",
+                "border-b border-border transition-all duration-300 group",
                 rowIdx % 2 === 0 ? "bg-card" : "bg-muted/20",
                 onRowClick && "cursor-pointer hover:bg-primary/5 hover:shadow-adaptive-md",
                 "animate-fade-in"
@@ -106,21 +106,11 @@ export default function DataTable<T extends { id?: string }>({
               style={{ animationDelay: `${rowIdx * 30}ms` }}
               onClick={() => onRowClick?.(row)}
             >
-              {/* Hover glow effect */}
-              {onRowClick && (
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-chart-3/10 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-lg" />
-              )}
-
-              {/* Side indicator */}
-              {onRowClick && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-chart-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-r-full" />
-              )}
-
               {columns.map((col, colIdx) => (
                 <TableCell
                   key={colIdx}
                   className={cn(
-                    "relative z-10 transition-colors duration-300",
+                    "transition-colors duration-300",
                     col.className
                   )}
                 >
@@ -129,13 +119,6 @@ export default function DataTable<T extends { id?: string }>({
                     : (row[col.accessor] as React.ReactNode)}
                 </TableCell>
               ))}
-
-              {/* Shimmer effect on hover */}
-              {onRowClick && (
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none overflow-hidden">
-                  <div className="shimmer" />
-                </div>
-              )}
             </TableRow>
           ))}
         </TableBody>

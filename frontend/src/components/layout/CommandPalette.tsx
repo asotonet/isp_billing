@@ -135,7 +135,7 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
         {/* Scan lines effect */}
         <div className="scan-lines absolute inset-0 pointer-events-none" />
 
-        <Command className="relative z-10 bg-transparent">
+        <Command className="relative z-10 bg-transparent" shouldFilter={false}>
           <div className="flex items-center border-b border-primary/20 px-3">
             <Zap className="mr-2 h-5 w-5 shrink-0 text-primary animate-pulse" />
             <CommandInput
@@ -247,15 +247,18 @@ export default function CommandPalette({ open: externalOpen, onOpenChange }: Com
               </>
             )}
 
-            {/* Navigation Items - only show when no search query */}
-            {!debouncedQuery && navigationItems.map((section, idx) => (
+            {/* Navigation Items - show when no search query or no results */}
+            {(!debouncedQuery || (debouncedQuery.length > 2 && !hasSearchResults)) && navigationItems.map((section, idx) => (
               <div key={section.group}>
                 {idx > 0 && <CommandSeparator className="bg-primary/10" />}
                 <CommandGroup
                   heading={section.group}
                   className="text-xs uppercase tracking-wider text-muted-foreground px-2 py-2"
                 >
-                  {section.items.map((item) => (
+                  {section.items.filter(item =>
+                    !debouncedQuery ||
+                    item.label.toLowerCase().includes(debouncedQuery.toLowerCase())
+                  ).map((item) => (
                     <CommandItem
                       key={item.href}
                       onSelect={() => handleSelect(item.href)}

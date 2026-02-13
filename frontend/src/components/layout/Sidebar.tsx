@@ -124,10 +124,6 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <h1 className="text-lg font-bold text-foreground truncate group-hover:text-primary transition-colors">
                 {companyName}
               </h1>
-              <p className="text-xs text-muted-foreground flex items-center gap-1 mono">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#39ff85] animate-pulse" />
-                Costa Rica
-              </p>
             </div>
           </div>
           <Button

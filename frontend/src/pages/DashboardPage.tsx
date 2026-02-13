@@ -157,20 +157,14 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 animate-fade-up">
       {/* Animated Header */}
-      <div className="flex items-center justify-between animate-fade-up" style={{ animationDelay: "0.1s" }}>
-        <div>
-          <h1 className="flex items-center gap-3">
-            <Zap className="h-6 w-6 text-primary animate-pulse" />
-            Dashboard
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Gestión en tiempo real de tu ISP
-          </p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <div className="h-2 w-2 rounded-full bg-[#39ff85] animate-pulse" />
-          <span className="mono">Sistema activo</span>
-        </div>
+      <div className="animate-fade-up" style={{ animationDelay: "0.1s" }}>
+        <h1 className="flex items-center gap-3">
+          <Zap className="h-6 w-6 text-primary animate-pulse" />
+          Dashboard
+        </h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gestión en tiempo real de tu ISP
+        </p>
       </div>
 
       {/* Stats Cards with Enhanced Animations */}

@@ -1,10 +1,15 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
+  ChevronDown,
+  ChevronRight,
   CreditCard,
   FileText,
   LayoutDashboard,
   LogOut,
+  Palette,
   Server,
+  Settings,
   Shield,
   UserCog,
   Users,
@@ -18,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/context/AuthContext";
 import { useLogout } from "@/hooks/useAuth";
+import { useSettings } from "@/hooks/useSettings";
 import { hasAccess } from "@/utils/permissions";
 
 const navItems = [
@@ -25,11 +31,15 @@ const navItems = [
   { label: "Clientes", href: "/clientes", icon: Users, module: "clientes" },
   { label: "Contratos", href: "/contratos", icon: FileText, module: "contratos" },
   { label: "Planes", href: "/planes", icon: Wifi, module: "planes" },
-  { label: "Routers", href: "/routers", icon: Server, module: "routers" },
   { label: "Instalaciones", href: "/instalaciones", icon: Wrench, module: "instalaciones" },
   { label: "Pagos", href: "/pagos", icon: CreditCard, module: "pagos" },
-  { label: "Usuarios", href: "/usuarios", icon: UserCog, module: "usuarios" },
-  { label: "Roles", href: "/roles", icon: Shield, module: "roles" },
+];
+
+const settingsItems = [
+  { label: "Routers", href: "/routers", icon: Server, module: "routers" },
+  { label: "Usuarios", href: "/settings/usuarios", icon: UserCog, module: "usuarios" },
+  { label: "Roles", href: "/settings/roles", icon: Shield, module: "roles" },
+  { label: "Personalización", href: "/settings/personalizacion", icon: Palette, module: "usuarios" },
 ];
 
 interface SidebarProps {
@@ -41,6 +51,23 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const location = useLocation();
   const { user } = useAuth();
   const logoutMutation = useLogout();
+  const { data: settings, refetch: refetchSettings } = useSettings();
+  const [settingsExpanded, setSettingsExpanded] = useState(
+    location.pathname.startsWith("/settings") || location.pathname.startsWith("/routers")
+  );
+
+  const companyName = settings?.company_name || "ISP Billing";
+
+  // Escuchar cambios en la configuración
+  useEffect(() => {
+    const handleSettingsUpdate = () => {
+      refetchSettings();
+    };
+    window.addEventListener("settingsUpdated", handleSettingsUpdate);
+    return () => {
+      window.removeEventListener("settingsUpdated", handleSettingsUpdate);
+    };
+  }, [refetchSettings]);
 
   const getInitials = (name: string) => {
     return name
@@ -55,6 +82,12 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const filteredNavItems = user
     ? navItems.filter((item) => hasAccess(user.rol, item.module))
     : [];
+
+  const filteredSettingsItems = user
+    ? settingsItems.filter((item) => hasAccess(user.rol, item.module))
+    : [];
+
+  const hasSettingsAccess = filteredSettingsItems.length > 0;
 
   return (
     <>
@@ -78,8 +111,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             <div className="h-8 w-8 rounded-lg bg-gradient-purple flex items-center justify-center shadow-md">
               <Wifi className="h-5 w-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-sidebar-foreground">ISP Billing</h1>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-bold text-sidebar-foreground truncate">{companyName}</h1>
               <p className="text-xs text-muted-foreground">Costa Rica</p>
             </div>
           </div>
@@ -120,6 +153,57 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               </Link>
             );
           })}
+
+          {/* Settings Section */}
+          {hasSettingsAccess && (
+            <div className="space-y-1 pt-2">
+              <button
+                onClick={() => setSettingsExpanded(!settingsExpanded)}
+                className={cn(
+                  "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group",
+                  location.pathname.startsWith("/settings") || location.pathname.startsWith("/routers")
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                )}
+              >
+                <Settings className="h-5 w-5" />
+                <span className="flex-1 text-left">Configuración</span>
+                {settingsExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </button>
+
+              {settingsExpanded && (
+                <div className="space-y-1 ml-4 pl-4 border-l-2 border-sidebar-border">
+                  {filteredSettingsItems.map((item) => {
+                    const isActive = location.pathname === item.href ||
+                      location.pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        onClick={onClose}
+                        className={cn(
+                          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 group relative overflow-hidden",
+                          isActive
+                            ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:translate-x-1"
+                        )}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.label}</span>
+                        {isActive && (
+                          <div className="absolute right-0 top-0 bottom-0 w-1 bg-sidebar-primary-foreground rounded-l-full" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         <Separator className="mx-3" />

@@ -521,5 +521,64 @@ Al crear nuevas páginas/componentes:
 
 ---
 
-**Actualizado**: 2026-02-04
-**Versión**: 2.0.0 - Tech Color Scheme
+## 🆕 Animaciones Avanzadas (v2.1.0)
+
+### Nuevas Animaciones Disponibles
+- **animate-bounce-in**: Entrada con rebote suave
+- **animate-rotate-in**: Rotación de entrada
+- **animate-flip-in**: Volteo en perspectiva 3D
+- **animate-slide-in-right**: Deslizamiento desde derecha
+- **animate-pulse-border**: Borde pulsante con glow
+- **animate-breathing**: Respiración suave (escala + opacidad)
+- **neon-pulse**: Pulso de neón en texto
+- **border-rainbow**: Borde con colores del arcoíris (experimental)
+
+### Efectos Especiales
+- **shimmer**: Efecto de brillo deslizante
+- **scan-lines**: Líneas de escaneo tech
+- **glass / glass-strong**: Glass morphism con blur
+- **card-enhanced**: Card con múltiples efectos (hover, glow, transform 3D)
+- **hover-glow**: Glow intenso en hover
+- **hover-scale**: Escala en hover
+- **ripple-effect**: Efecto de ondas al hacer click
+- **spotlight-hover**: Foco de luz siguiendo el cursor
+- **flip-3d**: Volteo 3D en hover
+- **magnetic**: Preparado para efectos magnéticos con cursor
+
+### Efectos de Texto
+- **text-gradient-animated**: Texto con gradiente animado
+- **neon-text**: Texto con efecto neón
+- **typing-effect**: Efecto de máquina de escribir
+
+### Animaciones Staggered
+- **stagger-fade**: Los hijos se animan con delay progresivo
+
+### Spinner Modernos
+- **spinner-modern**: Spinner con anillos pulsantes
+
+### Uso de Animaciones Complejas
+```tsx
+// Card con múltiples efectos
+<Card className="card-enhanced scan-lines">
+  <div className="shimmer" />
+  {/* contenido */}
+</Card>
+
+// Texto con gradiente animado
+<h1 className="text-gradient-animated">
+  Dashboard
+</h1>
+
+// Lista con animaciones staggered
+<div className="stagger-fade">
+  {items.map(item => <Item key={item.id} />)}
+</div>
+
+// Botón con efecto ripple
+<Button className="ripple-effect hover-glow">
+  Click me
+</Button>
+```
+
+**Actualizado**: 2026-02-12
+**Versión**: 2.1.0 - Advanced Animations & Effects

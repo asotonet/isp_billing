@@ -16,6 +16,7 @@ import {
   Wifi,
   Wrench,
   X,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -91,38 +92,56 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile overlay with blur */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden animate-fade-in"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md lg:hidden animate-fade-in"
           onClick={onClose}
         />
       )}
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar-background border-r border-sidebar-border transition-all duration-300 lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar-background border-r border-sidebar-border transition-all duration-300 lg:static lg:translate-x-0 scan-lines",
           open ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         )}
       >
-        {/* Header */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-purple flex items-center justify-center shadow-md">
-              <Wifi className="h-5 w-5 text-white" />
+        {/* Tech border glow */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-1/2 -right-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-breathing" />
+          <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 bg-chart-3/5 rounded-full blur-3xl animate-breathing" style={{ animationDelay: '1s' }} />
+        </div>
+
+        {/* Header with enhanced logo */}
+        <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border relative z-10 backdrop-blur-sm bg-sidebar-background/80">
+          <div className="flex items-center gap-3 group cursor-pointer">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 flex items-center justify-center shadow-lg hover-glow animate-breathing relative overflow-hidden">
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 shimmer" />
+              <Zap className="h-6 w-6 text-white relative z-10" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold text-sidebar-foreground truncate">{companyName}</h1>
-              <p className="text-xs text-muted-foreground">Costa Rica</p>
+              <h1 className="text-lg font-bold text-sidebar-foreground truncate group-hover:text-gradient-animated transition-all">
+                {companyName}
+              </h1>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                Costa Rica
+              </p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden hover-glow"
+            onClick={onClose}
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
+        {/* Navigation with staggered animations */}
+        <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto relative z-10 stagger-fade">
           {filteredNavItems.map((item, index) => {
             const isActive =
               location.pathname === item.href ||
@@ -133,51 +152,75 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 to={item.href}
                 onClick={onClose}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group relative overflow-hidden",
+                  "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                   isActive
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:translate-x-1"
+                    ? "bg-gradient-to-r from-sidebar-primary/90 to-sidebar-primary text-sidebar-primary-foreground shadow-lg"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1 hover:shadow-md"
                 )}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
+                {/* Active indicator glow */}
+                {isActive && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-chart-3/20 blur-xl" />
+                )}
+
+                {/* Icon with enhanced effects */}
                 <item.icon
                   className={cn(
-                    "h-5 w-5 transition-transform duration-200",
-                    isActive ? "scale-110" : "group-hover:scale-110"
+                    "h-5 w-5 transition-all duration-300 relative z-10",
+                    isActive
+                      ? "scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+                      : "group-hover:scale-110 group-hover:rotate-12"
                   )}
                 />
-                <span>{item.label}</span>
+
+                <span className="relative z-10">{item.label}</span>
+
+                {/* Active indicator line with pulse */}
                 {isActive && (
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-sidebar-primary-foreground rounded-l-full" />
+                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-white rounded-l-full animate-pulse-glow" />
                 )}
+
+                {/* Hover shine effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="absolute inset-0 shimmer" />
+                </div>
               </Link>
             );
           })}
 
-          {/* Settings Section */}
+          {/* Settings Section with enhanced accordion */}
           {hasSettingsAccess && (
             <div className="space-y-1 pt-2">
               <button
                 onClick={() => setSettingsExpanded(!settingsExpanded)}
                 className={cn(
-                  "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group",
+                  "w-full flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden",
                   location.pathname.startsWith("/settings") || location.pathname.startsWith("/routers")
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-md"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:shadow-md"
                 )}
               >
-                <Settings className="h-5 w-5" />
+                <Settings className={cn(
+                  "h-5 w-5 transition-all duration-300",
+                  settingsExpanded && "rotate-180"
+                )} />
                 <span className="flex-1 text-left">Configuración</span>
                 {settingsExpanded ? (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 w-4 animate-bounce-in" />
                 ) : (
                   <ChevronRight className="h-4 w-4" />
                 )}
+
+                {/* Hover effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="absolute inset-0 shimmer" />
+                </div>
               </button>
 
               {settingsExpanded && (
-                <div className="space-y-1 ml-4 pl-4 border-l-2 border-sidebar-border">
-                  {filteredSettingsItems.map((item) => {
+                <div className="space-y-1 ml-4 pl-4 border-l-2 border-primary/30 animate-slide-in-left">
+                  {filteredSettingsItems.map((item, index) => {
                     const isActive = location.pathname === item.href ||
                       location.pathname.startsWith(item.href);
                     return (
@@ -186,17 +229,33 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                         to={item.href}
                         onClick={onClose}
                         className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 group relative overflow-hidden",
+                          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden animate-fade-in",
                           isActive
-                            ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md"
-                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:translate-x-1"
+                            ? "bg-gradient-to-r from-sidebar-primary/90 to-sidebar-primary text-sidebar-primary-foreground shadow-lg"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1 hover:shadow-md"
                         )}
+                        style={{ animationDelay: `${index * 50}ms` }}
                       >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.label}</span>
                         {isActive && (
-                          <div className="absolute right-0 top-0 bottom-0 w-1 bg-sidebar-primary-foreground rounded-l-full" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-chart-3/20 blur-xl" />
                         )}
+
+                        <item.icon className={cn(
+                          "h-4 w-4 transition-all duration-300 relative z-10",
+                          isActive
+                            ? "scale-110 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]"
+                            : "group-hover:scale-110"
+                        )} />
+
+                        <span className="relative z-10">{item.label}</span>
+
+                        {isActive && (
+                          <div className="absolute right-0 top-0 bottom-0 w-1 bg-white rounded-l-full animate-pulse-glow" />
+                        )}
+
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          <div className="absolute inset-0 shimmer" />
+                        </div>
                       </Link>
                     );
                   })}
@@ -206,19 +265,24 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           )}
         </nav>
 
-        <Separator className="mx-3" />
+        <Separator className="mx-3 bg-sidebar-border/50" />
 
-        {/* User section */}
+        {/* User section with enhanced avatar */}
         {user && (
-          <div className="p-4 space-y-3">
-            <div className="flex items-center gap-3 px-2">
-              <Avatar className="h-10 w-10 ring-2 ring-sidebar-border">
-                <AvatarFallback className="bg-gradient-purple text-white text-sm font-semibold">
-                  {getInitials(user.nombre_completo)}
-                </AvatarFallback>
-              </Avatar>
+          <div className="p-4 space-y-3 relative z-10 backdrop-blur-sm bg-sidebar-background/80">
+            <div className="flex items-center gap-3 px-2 group cursor-pointer hover-lift">
+              <div className="relative">
+                <Avatar className="h-11 w-11 ring-2 ring-primary/30 group-hover:ring-primary/60 transition-all duration-300">
+                  <AvatarFallback className="bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 text-white text-sm font-bold relative overflow-hidden">
+                    <div className="absolute inset-0 shimmer" />
+                    <span className="relative z-10">{getInitials(user.nombre_completo)}</span>
+                  </AvatarFallback>
+                </Avatar>
+                {/* Online indicator */}
+                <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-sidebar-background animate-pulse" />
+              </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sidebar-foreground truncate">
+                <p className="text-sm font-semibold text-sidebar-foreground truncate group-hover:text-gradient-animated transition-all">
                   {user.nombre_completo}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
@@ -228,12 +292,19 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
+              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 hover:shadow-md hover-glow ripple-effect transition-all duration-300"
               onClick={() => logoutMutation.mutate()}
               disabled={logoutMutation.isPending}
             >
               <LogOut className="h-4 w-4 mr-2" />
-              {logoutMutation.isPending ? "Cerrando..." : "Cerrar Sesión"}
+              {logoutMutation.isPending ? (
+                <span className="flex items-center gap-2">
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Cerrando...
+                </span>
+              ) : (
+                "Cerrar Sesión"
+              )}
             </Button>
           </div>
         )}

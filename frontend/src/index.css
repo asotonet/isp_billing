@@ -3,24 +3,24 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light mode - clean and modern */
-  --background: 0 0% 100%;            /* white */
-  --background-secondary: 220 20% 97%; /* light gray */
+  /* Light mode - soft and comfortable */
+  --background: 220 20% 96%;          /* soft light gray */
+  --background-secondary: 220 15% 93%; /* slightly darker gray */
   --foreground: 220 40% 10%;          /* dark text */
 
-  --card: 0 0% 100%;                  /* white cards */
+  --card: 0 0% 99%;                   /* almost white, not pure */
   --card-foreground: 220 40% 10%;
-  --popover: 0 0% 100%;
+  --popover: 0 0% 99%;
   --popover-foreground: 220 40% 10%;
 
   /* Cyan primary */
   --primary: 187 100% 42%;            /* #00b8d4 - slightly darker cyan for light mode */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 15% 93%;
+  --secondary: 220 15% 90%;
   --secondary-foreground: 220 40% 10%;
-  --muted: 220 15% 95%;
-  --muted-foreground: 220 15% 40%;
+  --muted: 220 15% 92%;
+  --muted-foreground: 220 15% 45%;
   --accent: 187 100% 42%;
   --accent-foreground: 0 0% 100%;
 
@@ -33,19 +33,19 @@
   --warning: 25 95% 53%;              /* adjusted orange */
   --warning-foreground: 0 0% 100%;
 
-  --border: 220 13% 91%;              /* light borders */
-  --input: 220 13% 91%;
+  --border: 220 20% 88%;              /* more visible borders */
+  --input: 220 20% 88%;
   --ring: 187 100% 42%;
   --radius: 0.75rem;
 
   /* Sidebar light mode */
-  --sidebar-background: 0 0% 98%;    /* very light gray instead of pure white */
+  --sidebar-background: 0 0% 97%;    /* soft gray */
   --sidebar-foreground: 220 40% 10%;
   --sidebar-primary: 187 100% 42%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 15% 95%;
+  --sidebar-accent: 220 15% 92%;
   --sidebar-accent-foreground: 220 40% 10%;
-  --sidebar-border: 220 20% 85%;     /* more visible border */
+  --sidebar-border: 220 20% 82%;     /* visible border */
 
   /* Charts - vibrant accent colors */
   --chart-1: 187 100% 42%;            /* cyan */
